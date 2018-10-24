@@ -2,21 +2,7 @@
 // Username:peng_peng
 // password : Peng0peng
 
-#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <memory.h>
-#include <bitset> 
-#include <queue>
-#include <stack>
-#include <set>
-#include <map>
-#include <cctype>
-#include <unordered_map>
-
-using namespace std;
-
+#include "head.h"
 
 int cal_min_cost(vector<int> & coins, int *parr, int total) {
 	int min_index = -1;  //用于索引coins
@@ -31,8 +17,6 @@ int cal_min_cost(vector<int> & coins, int *parr, int total) {
 	return min_index;
 }
 
-
-
 int coinChange(vector<int>& coins, int amount) {
 	int *arr = (int *)malloc(sizeof(int)*(amount + 1));
 	memset(arr, 0, sizeof(int) * (amount + 1));
@@ -45,8 +29,6 @@ int coinChange(vector<int>& coins, int amount) {
 	}
 	return arr[amount];
 }
-
-
 
 int count(int k) {
 	if (k < 1) return 0;
@@ -199,208 +181,124 @@ void test_point() {
 	some_point_test();
 }
 
+int maxAreaOfIsland(vector<vector<int>>& grid, vector<vector<bool>>& visited, int i_row, int j_column)
+{
 
-int add = 0;
-
-void dfs(vector<vector<int>> &grid, vector<vector<int>>& visited, int i, int j, int *ret, int level) {
-
-	if (i < 0 || j < 0)
-		return;
-	if (i >= grid.size() || j >= grid[0].size())
-		return;
-	if (grid[i][j] == 0) {
-		//cout << "|||||||||||||||||" <<i<<"   "<<"  "<<j<<"          " << grid[i][j] << "||||||||||||||" << endl;  
-		return;
-
-
+	int ret = 0;
+	if (i_row<0 || i_row>=grid.size())
+	{
+		return 0;
 	}
-	if (!visited[i][j] == 1) {
-		visited[i][j] = 1;
-		if (grid[i][j] == 1) {
-			add = *ret + 1;
-			for (int s = 0; s<level; s++)
-			{
-				cout << "	";
-			}
-			cout << " <i,j> " << "<" << i << "," << j << ">" << "         ret        " << add << endl;
-
-			dfs(grid, visited, i, j + 1, &add, level + 1);
-			dfs(grid, visited, i - 1, j, &add, level + 1);
-			dfs(grid, visited, i + 1, j, &add, level + 1);
-			dfs(grid, visited, i, j - 1, &add, level + 1);
-
-		}
+	if (j_column < 0 || j_column>=grid[0].size())
+	{
+		return 0;
 	}
 
+	cout <<" "<< grid[i_row][j_column];
+	if (i_row==grid.size()-1&&j_column==grid[0].size()-1)
+	{
+		cout << endl << endl;
+	}
+
+	if (!visited[i_row][j_column]&&grid[i_row][j_column])
+	{
+	    visited[i_row][j_column] = true;	
+		
+			int a = maxAreaOfIsland(grid, visited, i_row - 1, j_column);
+		
+		
+			int b = maxAreaOfIsland(grid, visited, i_row + 1, j_column);
+			
+		
+		     int c = maxAreaOfIsland(grid, visited, i_row, j_column - 1);
+		
+		
+			 int d = maxAreaOfIsland(grid, visited, i_row, j_column + 1);
+			
+		ret += 1;
+		ret += (a + b + c + d);
+	}
+
+	return ret;
 }
 
+void test_maxAreaOfIsland()
+{
+	int A[8][13] = {
+		{ 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 },
+		{ 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0 },
+		{ 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0 }
+	};
 
-int maxAreaOfIsland(vector<vector<int>>& grid) {
-	auto rows = grid.size();
-	auto columns = grid[0].size();
-	auto maxNum = -1;
-	vector<vector<int> > visited;   // 0 代表没有被访问过
-	for (auto i = 0; i < rows; i++) {
-		vector<int> temp;
-		for (auto j = 0; j<columns; j++)
+
+
+
+		//int a[8][13] = {
+		//	{ 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 },
+		//	{ 20, 21, 22, 23, 24 ,25 ,26, 27, 28, 29 ,30 ,31, 32 },
+		//	{ 30, 31, 32, 33, 34 ,35 ,36, 37, 38, 39 ,40 ,41, 42 },
+		//	{ 40, 41, 42, 43, 44 ,45 ,46, 47, 48, 49 ,50 ,51, 52 },
+		//	{ 50, 51, 52, 53, 54 ,55 ,56, 57, 58, 59 ,60 ,61, 62 },
+		//	{ 60, 61, 62, 63, 64 ,65 ,66, 67, 68, 69 ,70 ,71, 72 },
+		//	{ 70, 71, 72, 73, 74 ,75 ,76, 77, 78, 79 ,80 ,81, 82 },
+		//	{ 80, 81, 82, 83, 84 ,85 ,86, 87, 88, 89 ,90 ,91, 92 },
+		//};
+
+
+	/*int A[4][4] = {
+		{ 10, 11, 12, 13, },
+		{ 20, 21, 22, 23, },
+		{ 30, 31, 32, 33, },
+		{ 40, 41, 42, 43, },
+	};*/
+
+
+	
+
+
+	vector<vector<int >	>grid;
+	vector<vector<bool> >visited;
+
+	for (int i = 0; i < sizeof(A) / sizeof(A[0]); i++)
+	{
+		vector<int > tt;
+		vector<bool> kk;
+		for (int j = 0; j < sizeof(A[i]) / sizeof(int); j++)
 		{
-			temp.push_back(0);
+
+			tt.push_back(A[i][j]);
+			kk.push_back(false);
+
 		}
-		visited.push_back(temp);
+		grid.push_back(tt);
+		visited.push_back(kk);
 	}
-	for (auto i = 0; i < rows; i++) {
-		for (auto j = 0; j < columns; j++)
+	int ans = 0;
+
+
+	int m = grid.size();
+	int n = grid[0].size();
+
+	int maxValue = 0;
+	for (int i=0;i<m;i++)
+	{
+		for (int j=0;j<n;j++)
 		{
-			int tmp = 0;
-			//int *p = &tmp;
-			dfs(grid, visited, i, j, &tmp, tmp);
-			cout << "o" << (tmp) << endl;
-			if (add > maxNum) {
-				maxNum = add;
-			}
+			maxValue = max(maxValue, maxAreaOfIsland(grid, visited, 0, 0));
+
 		}
-
 	}
-	return add;
-}
 
 
 
-void maxAreaOfIsland_test() {
-	vector<int> a_0, a_1, a_2, a_3, a_4, a_5, a_6, a_7;
-	a_0.push_back(1);
-	a_0.push_back(1);
-	a_0.push_back(1);
-	a_0.push_back(1);
-	a_0.push_back(1);
-	a_0.push_back(1);
-	a_0.push_back(0);
-	a_0.push_back(1);
-	a_0.push_back(0);
-	a_0.push_back(0);
-	a_0.push_back(0);
-	a_0.push_back(0);
-	a_0.push_back(0);
 
 
-
-	a_1.push_back(0);
-	a_1.push_back(0);
-	a_1.push_back(0);
-	a_1.push_back(0);
-	a_1.push_back(0);
-	a_1.push_back(0);
-	a_1.push_back(0);
-	a_1.push_back(1);
-	a_1.push_back(1);
-	a_1.push_back(1);
-	a_1.push_back(0);
-	a_1.push_back(0);
-	a_1.push_back(0);
-
-
-	a_2.push_back(0);
-	a_2.push_back(1);
-	a_2.push_back(1);
-	a_2.push_back(0);
-	a_2.push_back(1);
-	a_2.push_back(0);
-	a_2.push_back(0);
-	a_2.push_back(0);
-	a_2.push_back(0);
-	a_2.push_back(0);
-	a_2.push_back(0);
-	a_2.push_back(0);
-	a_2.push_back(0);
-
-
-
-	a_3.push_back(0);
-	a_3.push_back(1);
-	a_3.push_back(0);
-	a_3.push_back(0);
-	a_3.push_back(1);
-	a_3.push_back(1);
-	a_3.push_back(0);
-	a_3.push_back(0);
-	a_3.push_back(1);
-	a_3.push_back(0);
-	a_3.push_back(1);
-	a_3.push_back(0);
-	a_3.push_back(0);
-
-
-	a_4.push_back(0);
-	a_4.push_back(1);
-	a_4.push_back(0);
-	a_4.push_back(0);
-	a_4.push_back(1);
-	a_4.push_back(1);
-	a_4.push_back(0);
-	a_4.push_back(0);
-	a_4.push_back(1);
-	a_4.push_back(1);
-	a_4.push_back(1);
-	a_4.push_back(0);
-	a_4.push_back(0);
-
-
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(0);
-	a_5.push_back(1);
-	a_5.push_back(0);
-	a_5.push_back(0);
-
-
-	a_6.push_back(0);
-	a_6.push_back(0);
-	a_6.push_back(0);
-	a_6.push_back(0);
-	a_6.push_back(0);
-	a_6.push_back(0);
-	a_6.push_back(0);
-	a_6.push_back(1);
-	a_6.push_back(1);
-	a_6.push_back(1);
-	a_6.push_back(0);
-	a_6.push_back(0);
-	a_6.push_back(0);
-
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(1);
-	a_7.push_back(1);
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(0);
-	a_7.push_back(0);
-
-
-	vector<vector<int >>  cont;
-	cont.push_back(a_0);
-	cont.push_back(a_1);
-	cont.push_back(a_2);
-	cont.push_back(a_3);
-	cont.push_back(a_4);
-	cont.push_back(a_5);
-	cont.push_back(a_6);
-	cont.push_back(a_7);
-
-
-	cout << "eee" << maxAreaOfIsland(cont);
+	return ;
 
 }
 
@@ -492,10 +390,6 @@ void test_uniqueMorseRepresentations() {
 }
 
 
-
-
-
-
 struct TreeNode {
 	int val;
 	TreeNode *left;
@@ -579,7 +473,6 @@ TreeNode* pruneTree(TreeNode* root) {
 
 	return root;
 }
-
 
 void test_pruneTree() {
 	//[1,null,0,0,1]
@@ -782,7 +675,6 @@ void test_smallestRangeI() {
 }
 
 
-
 struct ListNode {
 	int val;
 	ListNode *next;
@@ -943,8 +835,6 @@ void test_spiralOrder() {
 	return;
 }
 
-
-
 TreeNode* searchBST(TreeNode* root, int val) {
 	if (root == NULL)
 	{
@@ -967,7 +857,6 @@ TreeNode* searchBST(TreeNode* root, int val) {
 
 }
 
-
 void test_searchBST() {
 	//void
 }
@@ -984,8 +873,6 @@ public:
 		children = _children;
 	}
 };
-
-
 
 /*void postorder(Node* root, vector<int> &ans) {
 
@@ -1032,10 +919,6 @@ void test_postorder() {
 
 }
 
-
-
-
-
 int maxDepth(Node* root) {
 	if (root == NULL)
 	{
@@ -1053,7 +936,6 @@ int maxDepth(Node* root) {
 	}
 	return max + 1;
 }
-
 
 void test_maxDepth() {
 	Node *p_5 = new Node(5, {});
@@ -1078,8 +960,6 @@ void test_maxDepth() {
 	return;
 }
 
-
-
 void preorder(Node* root, vector<int> &ans) {
 	if (root == NULL)
 	{
@@ -1103,7 +983,6 @@ void preorder(Node* root, vector<int> &ans) {
 
 }
 
-
 void test_preorder() {
 	Node *p_5 = new Node(5, {});
 	Node *p_6 = new Node(6, {});
@@ -1126,7 +1005,6 @@ void test_preorder() {
 
 	return;
 }
-
 
 vector<int> pick_odd_char(string A) {
 	vector<int> char_dict(26, 0);
@@ -1177,8 +1055,6 @@ int numSpecialEquivGroups(vector<string>& A) {
 	return pp.size();
 }
 
-
-
 void test_numSpecialEquivGroups() {
 	// 	string A("abcd");
 	// 	string B("cdab");
@@ -1205,7 +1081,6 @@ void test_numSpecialEquivGroups() {
 	// 	pp.push_back(F);
 	cout << "111  " << numSpecialEquivGroups(pp);
 }
-
 
 vector<string> uncommonFromSentences(string A, string B) {
 	return{};
@@ -1375,8 +1250,6 @@ void test_shortestToChar() {
 	return;
 }
 
-
-
 bool hasAlternatingBits(int n) {
 
 	while (n)
@@ -1444,8 +1317,6 @@ void test_countPrimeSetBits() {
 	cout << "111111";
 	cout << " t      111111111111111111111 " << countPrimeSetBits(244, 269);
 }
-
-
 
 vector<double> averageOfLevels(TreeNode* root) {
 	queue<TreeNode *> tree;
@@ -1630,47 +1501,61 @@ void test_largestTriangleArea() {
 }
 
 
-
-
-void letterCasePermutation_helper(string S, int level, vector<string> &ans) {
-	if (level == S.size())
+void letterCasePermutation_helper(string S, int level, vector<string> &ans,string &curr) {
+	if (S.size() == curr.size())
 	{
-		for (int i = 0; i < ans.size(); i++)
-		{
-			cout << "   111   " << ans[i];
-		}
+		ans.push_back(curr);
+		cout << "  111  " << curr<<endl;
 		return;
 	}
 
 	if (isalpha(S[level]))
 	{
 		for (int i = 0; i < 2; i++) {
-			string  ss(ans[i]);
-			ans[i].push_back(S[level] + ('a' - 'A')*i);
+			curr.append(string(1, char(('A' - 'a')*i + S[level])));
+			letterCasePermutation_helper(S, level + 1, ans,curr);
+			curr.pop_back();			
 		}
 	}
 	else {
-
+			curr.append(string(1, S[level]));
+			letterCasePermutation_helper(S, level + 1, ans, curr);
+			curr.pop_back();	
 	}
-	letterCasePermutation_helper(S, level + 1, ans);
-
-
 
 }
 
+string upper_char(string S)
+{
+	string ans;
+	for (auto c : S)
+	{
+		if (isupper(c))
+		{
+			ans.push_back('a' - 'A' + c);
+		}
+		else
+		{
+			ans.push_back(c);
+		}
+	}
+	return ans;
+}
 
 
-
-vector<string> letterCasePermutation(string S, int level) {
-	return{};
+vector<string> letterCasePermutation(string S) {
+	vector<string >ss;
+	string ttttttt;
+	S = upper_char(S);
+	letterCasePermutation_helper(S, 0, ss,ttttttt);
+	return ss;
 }
 
 
 void test_letterCasePermutation() {
-
+	letterCasePermutation("CaadD");
+	return;
 }
-
-
 
 
 int scoreOfParentheses(string S) {
@@ -1713,8 +1598,6 @@ int scoreOfParentheses(string S) {
 }
 
 
-
-
 void test_scoreOfParentheses() {
 	string ss("(()(()))");
 	scoreOfParentheses(ss);
@@ -1723,20 +1606,20 @@ void test_scoreOfParentheses() {
 
 
 string frequencySort(string s) {
-//unordered_map<char, int> ss;
-//for (auto c : s)
-//{
-//	ss[c]++;
-//}
-//sort(ss.begin(), ss.end(), [](const pair<char, int> &x, const pair<char, int> &y) -> int {
-//	return x.second >= y.second;
-//});
+	unordered_map<char, int> ss;
+	for (auto c : s)
+	{
+		ss[c]++;
+	}
+//	sort(ss.begin(), ss.end(), [](pair<char, int> &x,  pair<char, int> &y) -> int {
+//		return x.second >= y.second;
+//	});
 	return s;
 }
 		    
 
 void test_frequencySort() {
-//	frequencySort("bbAa");
+	frequencySort("bbAa");
 	return;
 }
 
@@ -1768,19 +1651,253 @@ void test_sort()
 	test_sttttt();
 }
 
+void countArrangement_help(vector<vector<int>> &con, vector<int>& curr, vector<bool>&visited, int level,int N,int & cnt)
+{
+	if (curr.size()==N-1)
+	{
+		cnt++;
+		return;
+	}
+	for (int i=1;i<N;i++)
+	{
+		if (!visited[i]&&(i%level==0||level%i==0))
+		{
+			visited[i] = true;
+			curr.push_back(i);
+			countArrangement_help(con, curr, visited, level + 1, N,cnt);
+			curr.pop_back();
+			visited[i] = false;
+		}
+	}
+
+}
+
+int countArrangement(int N) {
+	vector<int> ss;
+	int level = 1;
+	vector<vector<int> >con;
+	vector<bool> visited(N+1, false);
+	int cnt = 0;
+	countArrangement_help(con,ss,visited,level,N+1,cnt);
+	return cnt;
+}
+
+void test_countArrangement()
+{
+	int c = countArrangement(6);
+	cout << "     1111111  " << c;
+}
+
+void generateParenthesis_helper(int n,vector<string>&ans,string &ss,int level,int left,int right)
+{
+	if (n==ss.size())
+	{
+		if (left==right)	  // if 只能在中间不能和上一个if条件等价起来.
+		{
+			ans.push_back(ss);
+		}
+		
+		return;
+	}
+
+	if(right>left)	  
+	{
+		return;
+	}
+	
+
+	if(level!=0)
+	{
+		ss.push_back(')');
+		generateParenthesis_helper(n, ans, ss, level + 1,left,right+1);
+		ss.pop_back();
+	}
+	if (level!=n-1)
+	{
+		ss.push_back('(');
+		generateParenthesis_helper(n, ans, ss, level + 1,left+1,right);
+		ss.pop_back();
+	}
+}
+
+vector<string> generateParenthesis()
+{
+	int N = 12;
+	vector<string> ans;
+	string str;
+	int level = 0;
+	generateParenthesis_helper(N, ans, str, level,0,0);
+
+	return ans;
+}
+
+/*
+vector<vector<int>> combinationSum3(int k, int n) {
+
+}
+
+
+
+void test_combinationSum3()
+{
+
+}
+
+
+ */
+
+bool stoneGame(vector<int> stone)
+{
+	vector<int> ret(0, stone.size() / 2);
+	for (int i=0;i<stone.size();i++)
+	{
+		
+	}
+	return false;
+}
+
+void test_stoneGame() {
+	int t[] = { 5,3,5,5 };
+	vector<int> ss(t , t+sizeof(t)/sizeof(int));
+
+//	bool ret = stoneGame();
+	
+}
+
+vector<vector<int>> handler_vector_duplicates(vector<vector<int>>& in)
+{
+	vector<vector<int>> out;
+	if (in.size() == 0)
+		return out;
+	sort(in[0].begin(), in[0].end());
+	out.push_back(in[0]);
+	for (int i=0;i<in.size()-1;i++)
+	{
+	  sort(in[i+1].begin(), in[i+1].end());
+	  if (in[i]!=in[i+1])
+	  {
+		  out.push_back(in[i+1]);
+	  }
+	}
+	return out;
+}
+
+
+void combinationSum_helper(vector<vector<int>> & YY, vector<int>& candidates, int target, int start, vector<int>& curr, int& sum)
+{
+
+	if (sum == target)
+	{
+		YY.push_back(curr);
+		return;
+	}
+	if (sum>target)
+	{
+		return;
+	}
+
+	for (int i = start; i<candidates.size(); i++)
+	{
+		sum += candidates[i];
+		curr.push_back(candidates[i]);
+		combinationSum_helper(YY, candidates, target, i, curr, sum);
+		curr.pop_back();
+		sum -= candidates[i];
+	}
+}
+void test_combinationSum()
+{
+
+//int a[] = { 2,3,3 };
+//int b[] = { 3,2,3 };
+//int c[] = { 3,3,2 };
+//
+//vector<int> y1(a, a + sizeof(a) / sizeof(int));
+//vector<int> y2(b, b + sizeof(b) / sizeof(int));
+//vector<int> y3(c, c + sizeof(c) / sizeof(int));
+//
+//vector<vector<int>> sss;
+//sss.push_back(y1);
+//sss.push_back(y2);
+//sss.push_back(y3);
+	int stt[] = { 2,3,5 };
+	vector<int> candidates(stt,stt+sizeof(stt)/sizeof(int));
+	
+	int target = 7;
+	vector<vector<int>> YY;
+	vector<int> curr;
+	int sum = 0;
+	combinationSum_helper(YY,candidates, target,0,curr,sum);
+	
+	return;
+}
+void combinationSum2_helper(vector<vector<int>> & YY, vector<int>& candidates, int target, vector<int>& curr, int& sum, vector<bool>& visited,int lastValue)
+{
+//	sort(candidates.begin(), candidates.end());
+	if (sum == target)
+	{
+		YY.push_back(curr);
+		return;
+	}
+	if (sum>target)
+	{
+		return;
+	}
+ 
+    for (int i = 0; i<candidates.size(); i++)
+	{
+		if (candidates[i]==lastValue)
+		{
+			continue;
+		}
+		if (!visited[i])
+		{
+			visited[i] = true;
+			sum += candidates[i];
+			curr.push_back(candidates[i]);
+			combinationSum2_helper(YY, candidates, target, curr, sum, visited, candidates[i]);
+			curr.pop_back();
+			sum -= candidates[i];
+			visited[i] = false;
+
+		}
+
+	}
+   
+}
+
+void test_combinationSum2()
+{
+	int stt[] = { 1,1,6 };
+	vector<int> candidates(stt, stt + sizeof(stt) / sizeof(int));
+
+	int target = 8;
+	vector<vector<int>> YY;
+	vector<int> curr;
+	int sum = 0;
+	sort(candidates.begin(), candidates.end());
+
+
+	vector<bool> visited(candidates.size(), false);
+	combinationSum2_helper(YY, candidates, target, curr, sum,visited,-1);
+
+	return;
+}
+
 
 void backTracking(vector<vector<int>>& permus, vector<int>& curr, vector<bool>& visted, vector<int>& nums) {
 	if (curr.size() == nums.size()) {
 		permus.push_back(curr);
 		return;
 	}
-	for (int i = 0; i<nums.size(); ++i) {
-		if (visted[i] == false) {
+	for (auto i = 0; i<nums.size(); ++i) {
+		if (!visted[i]) {
 			visted[i] = true;
 			curr.push_back(nums[i]);
 			backTracking(permus, curr, visted, nums);
-			// visted[i] = false;
-			// curr.pop_back();
+			//这两步很重要的,恢复成原来的样子,这就是回溯法的要点.
+			visted[i] = false;
+			curr.pop_back();	   
 		}
 	}
 }
@@ -1793,8 +1910,6 @@ vector<vector<int>> permute(vector<int>& nums) {
 	backTracking(permus, curr, visted, nums);
 	return permus;
 }
-
-
 
 vector<int> ret;
 
@@ -1821,11 +1936,9 @@ void permute_t(int nums, int level, int i) {
 		{
 			ret.push_back(i);
 			permute_t(nums, level + 1, i);
-		}
-		else
-		{
 			ret.pop_back();
 		}
+		
 	}
 }
 
@@ -1835,28 +1948,412 @@ void test_backtraceing() {
 	YY.push_back(2);
 	YY.push_back(3);
 	
-	//permute_t(3, 0, 0);
+	permute_t(12, 0, 0);
 
-	permute(YY);
+	//permute(YY);
 
 
 
 }
+
+
+
+
+
+TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+	if (!root)
+	{
+		return nullptr;
+	}
+	
+}
+
+void test_subtreeWithAllDeepest()
+{
+	
+}
+
+
+
+
+int minimumDeleteSum1(string s1, string s2) 
+{
+	int m = s1.size();
+	int n = s2.size();
+
+	vector<vector<int>> dp(m,vector<int>(n, 0));
+
+	if (s1[0]!=s2[0])
+	{
+		dp[0][0] = s1[0] + s2[0];
+	}
+	else
+	{
+		dp[0][0] = 0;
+	}
+
+	for (int i=1;i<m;i++)
+	{
+		if (s2[0]!=s1[i])
+		{
+			dp[i][0] = dp[i - 1][0] + s1[i];
+		}
+		else
+		{
+			dp[i][0] = dp[i - 1][0];
+		}
+	}
+
+	for (int j = 1; j<n; j++)
+	{
+		if (s1[0] != s2[j])
+		{
+			dp[0][j] = dp[0][j-1] + s2[j];
+		}
+		else
+		{
+			dp[0][j] = dp[0][j-1];
+		}
+	}
+
+	for (int i=1;i<m;i++)
+	{
+		for (int j=1;j<n;j++)
+		{
+			if (s1[i]==s2[j])
+			{
+				dp[i][j] = dp[i - 1][j - 1];
+			}
+			else
+			{
+				dp[i][j] = min(dp[i - 1][j] + s1[i], dp[i][j - 1] + s2[j]);
+			}
+		}
+	}
+
+	return dp[m - 1][n - 1];
+
+
+}
+
+
+int minimumDeleteSum2(string s1, string s2)
+{
+	int m = s1.size();
+	int n = s2.size();
+
+	vector<vector<int>> dp((m+1), vector<int>((n+1), 0));
+
+	dp[0][0] = 0;
+	
+	for (int i = 1; i<=m; i++)
+	{	
+		dp[i][0] = dp[i - 1][0] + s1[i-1];
+		cout << dp[i][0] << endl;
+	}
+
+	for (int j = 1; j<=n; j++)
+	{
+		
+		dp[0][j] = dp[0][j - 1] + s2[j-1];
+		cout << dp[0][j] << endl;
+
+	}
+
+	for (int i = 1; i<=m; i++)
+	{
+		for (int j = 1; j<=n; j++)
+		{
+			if (s1[i-1] == s2[j-1])
+			{
+				dp[i][j] = dp[i-1][j-1];
+				cout << dp[i][j] << endl;
+			}
+			else
+			{
+				dp[i][j] = min(dp[i-1][j] + s1[i-1], dp[i][j-1] + s2[j-1]);
+				cout << dp[i][j] <<s1[i-1]<<s2[j-1]<< endl;
+			}
+		}
+	}
+
+	return dp[m][n];
+
+
+}
+
+void test_minimumDeleteSum()
+{
+	string S1 = "delete";
+	string S2 = "leet";
+	int ans = minimumDeleteSum2(S1, S2);
+
+	return;
+}
+
+int minMoves2(vector<int>& nums) 
+{
+	sort(nums.begin(), nums.end());
+	int median = nums[nums.size() / 2];
+	int ans = 0;
+	for (int i=0;i<nums.size();i++)
+	{
+		ans += abs(nums[i] - median);
+	}
+
+	return  ans;
+}
+
+void test_minMoves2()
+{
+	
+}
+
+
+int minMoves(vector<int>& nums)
+{
+	sort(nums.begin(), nums.end());
+	int smallest = nums[0];
+	int ans = 0;
+	for (int i = 0; i < nums.size(); i++)
+	{
+		ans += abs(nums[i] - smallest);
+	}
+	return ans;
+}
+
+void test_minMoves()
+{
+	
+}
+
+vector<int> productExceptSelf(vector<int>& nums) 
+{
+	int s = nums.size();
+	vector<int>right(s, 1);
+	vector<int>left(s, 1);
+
+	left[0] = nums[0];
+	for (int i=1;i<s;i++)
+	{
+		left[i] = left[i-1]*nums[i];
+	}
+
+
+	right[s-1] = nums[s - 1];
+	for (int j=s-2;j>=0;j--)
+	{
+		right[j] = nums[j] * right[j+1];
+	}
+
+	
+	vector<int> ans(s, 1);
+	ans[0] = right[1];
+	ans[s - 1] = left[s-2];
+	for (int k=1;k<s-1;k++)
+	{
+
+		ans[k] = right[k+1] * left[k-1];
+	}
+	return ans;
+
+
+}
+
+void test_productExceptSelf()
+{
+	int s[] = {  2, 3, 4, 5 };
+	vector<int>gg(s, s + sizeof(s) / sizeof(int));
+	vector<int>kk = productExceptSelf(gg);
+	return;
+
+}
+
+/*
+ *
+ * 使用异或  求不带进位的和
+ * 使用与操作 计算进位
+ *
+ *
+ */
+
+int getSum(int a, int b) 
+{
+	if (b==0)
+	{
+		return a;
+	}
+
+	int sum = a^b;
+	int carry = (a&b) << 1;
+	return getSum(sum, carry);
+}
+
+void test_getSum()
+{
+	
+}
+
+string trans_int(string AA)
+{
+	string rr =  "0153429786" ;
+	string ans;
+	for (int i=0;i<AA.size();i++)
+	{
+		if (AA[i]=='3'||AA[i]=='4'||AA[i]=='7')
+		{
+			return AA;
+		}
+		cout << AA[i] - '0';
+		ans+=rr[AA[i]-'0'];
+	}
+	return ans;
+}
+
+
+
+int rotatedDigits(int N) {
+	int ans = 0;
+	for (int i=0;i<=N;i++)
+	{
+		char buff[33];
+		
+		string src = _itoa(i, buff, 10);
+		string dst = trans_int(src);
+		if (src!=dst)
+		{
+			ans++;
+		}
+
+		cout << "src   " << src << "   dst    " << dst <<"    "<<ans <<endl;
+
+	}
+	return ans;
+}
+
+
+void test_rotatedDigits()
+{
+	int aaa = rotatedDigits(230);
+	cout << aaa;
+}
+
+
+
+class MagicDictionary {
+public:
+	set<string> dd;
+	/** Initialize your data structure here. */
+	MagicDictionary() {
+
+	}
+
+	/** Build a dictionary through a list of words */
+	void buildDict(vector<string> dict) {
+		for (size_t i=0;i<dict.size();i++)
+		{
+			dd.insert(dict[i]);
+		}
+	}
+
+	bool dis_word_2_word_one_char(const string AA, const string BB)
+	{
+		int ans = 0;
+		if (AA.size()!=BB.size())
+		{
+			return false;
+		}
+
+		int cnt = 0;
+		for (size_t k = 0; k < AA.size(); k++)
+		{
+			if (AA[k]!=BB[k])
+			{
+				cnt++;
+			}
+		}
+		return cnt == 1;
+	}
+
+
+	/** Returns if there is any word in the trie that equals to the given word after modifying exactly one character */
+	bool search(string word) {
+		auto it = dd.begin();
+		for (;it!=dd.end();++it)
+		{
+			 if(dis_word_2_word_one_char(*it,word))
+			 {
+				 return true;
+			 }
+		}
+		return false;
+
+	}
+};
+
+void test_MagicDictionary()
+{
+	vector<string>sss({ "hello","leetcode" });
+	MagicDictionary *obj = new MagicDictionary();
+	obj->buildDict(sss);
+	cout<<"   11   "<<obj->search("helle");
+
+}
+
+
+
+int numComponents(ListNode* head, vector<int>& G) {
+	ListNode *p_head = head;
+	int cnt = 0;
+	while (p_head)
+	{
+		int val = p_head->val;
+		bool broken = true;
+		for (int i=0;i<G.size();i++)
+		{
+			if (val==G[i])
+			{
+				broken = false;
+				break;
+			}	
+		}
+		if (broken)
+			cnt++;
+		p_head = p_head->next;
+	}
+	return cnt;
+}
+
+void test_numComponents()
+{
+	ListNode *p0 = new ListNode(0);
+	ListNode *p1 = new ListNode(1); 
+	ListNode *p2 = new ListNode(2);
+	ListNode *p3 = new ListNode(3);
+	ListNode *p4 = new ListNode(4);
+
+
+
+	p0->next = p1;
+	p1->next = p2;
+	p2->next = p3;
+	p3->next = p4;		 
+	int a[] = { 0, 3, 1, 4 };
+	vector<int > kk(a, a + sizeof(a) / sizeof(int));
+
+	int kkk = numComponents(p0, kk);
+	cout << " 1    " << kkk;
+}
+
 
 int main() {
 	//std::cout << "hello?";
 	//test_1();
 	//test_point();
 	//maxAreaOfIsland_test();
-
-	/*int  y = 10;
-	int& s = y;*/
-	//int *p = &y;
 	//test_recursion_pass(s,&y);
-	test_backtraceing();
-
+	//test_backtraceing();
 	//test_BinaryGap();
-	//cout << s;
 	//test_toLowerCase();
 	//test_numJewelsInStones();
 	//test_sortArrayByParity();
@@ -1885,11 +2382,32 @@ int main() {
 	//test_isMonotonic();
 	//test_countSubstrings();
 	//test_largestTriangleArea();	 
-	//test_letterCasePermutation();	 ?
+	//test_letterCasePermutation();	
 	//test_scoreOfParentheses();		 ?
-	//cout << "cbc";
 	//test_frequencySort();
 	//test_sort();
+	//local_test();
+	//test_countArrangement();
+	//test_generateParenthesis();
+	//test_combinationSum3();  ?
+	//test_combinationSum();  
+	//test_combinationSum2(); 
+	//test_stoneGame();
+	//test_maxAreaOfIsland();
+	//test_subtreeWithAllDeepest();
+	//test_minimumDeleteSum();
+	//test_minMoves2();
+	//test_minMoves();
+
+	//test_productExceptSelf();
+	//test_getSum();
+	//test_rotatedDigits();
+	//test_MagicDictionary();
+	//test_numComponents();		 ?
+
+
+
+
 	return 0;
 }
 
