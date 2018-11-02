@@ -861,6 +861,7 @@ void test_searchBST() {
 	//void
 }
 
+
 class Node {
 public:
 	int val;
@@ -2301,24 +2302,74 @@ void test_MagicDictionary()
 }
 
 
+  // 根据链表去找vector的元素 (出现了(找不到的情况/结束)就++1) 只有找到头  	 
+
+
+bool find_ele(int val,vector<int >& G)
+{
+	for (int i=0;i<G.size();i++)
+	{
+		if (val==G[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+ListNode *sort_link_list(ListNode *head)
+{
+	vector<int > GG;
+	while (head)
+	{
+		GG.push_back(head->val);
+		head = head->next;
+	}
+
+	sort(GG.begin(), GG.end());
+	ListNode *head_ = new ListNode(GG[0]);
+
+	ListNode *last = head_;
+	for (int i=1;i<GG.size();i++)
+	{
+		ListNode *node = new ListNode(GG[i]);
+		last->next = node;
+		last = node;
+	}
+
+	return head_;
+
+}
 
 int numComponents(ListNode* head, vector<int>& G) {
 	ListNode *p_head = head;
+	
 	int cnt = 0;
 	while (p_head)
 	{
+		bool found_head = false;
+		bool found_tail = false;
 		int val = p_head->val;
-		bool broken = true;
-		for (int i=0;i<G.size();i++)
+		if (find_ele(val,G))
 		{
-			if (val==G[i])
-			{
-				broken = false;
-				break;
-			}	
+			found_head = true;
 		}
-		if (broken)
+		if (!find_ele(val,G)&&found_head)
+		{
+		
+			found_head = false;
+			found_tail = true;
+		}
+		if (find_ele(val,G)&&(!p_head->next)&&found_head)
+		{
+
+			found_head = false;
+			found_tail = true;
+		}
+		if (found_head==false&&found_tail==true)
+		{
 			cnt++;
+		}
 		p_head = p_head->next;
 	}
 	return cnt;
@@ -2327,24 +2378,1031 @@ int numComponents(ListNode* head, vector<int>& G) {
 void test_numComponents()
 {
 	ListNode *p0 = new ListNode(0);
-	ListNode *p1 = new ListNode(1); 
+	ListNode *p1 = new ListNode(3); 
 	ListNode *p2 = new ListNode(2);
-	ListNode *p3 = new ListNode(3);
-	ListNode *p4 = new ListNode(4);
+	ListNode *p3 = new ListNode(4);
+	ListNode *p4 = new ListNode(1);
 
 
 
 	p0->next = p1;
 	p1->next = p2;
 	p2->next = p3;
-	p3->next = p4;		 
-	int a[] = { 0, 3, 1, 4 };
-	vector<int > kk(a, a + sizeof(a) / sizeof(int));
+	p3->next = p4;
 
-	int kkk = numComponents(p0, kk);
-	cout << " 1    " << kkk;
+
+  
+  int a[] = { 3,0,2 };
+  vector<int > kk(a, a + sizeof(a) / sizeof(int));
+  
+  int kkk = numComponents(p0, kk);
+  cout << " 1    " << kkk;
 }
 
+
+
+
+
+
+
+//int findCircleNum(vector<vector<int>>& M) 
+//{
+//	int cnt = 0;
+//	int m = M.size();
+//	int n = M[0].size();
+//	vector<vector<bool> >(m,(n,bool))
+//	for (int i=0;i<m;i++)
+//	{
+//		for (int j=0;j<n;j++)
+//		{
+//			helper(M, visited, i, j);
+//		}
+//	}
+//}
+//
+//void test_findCircleNum()
+//{
+//	
+//}
+//
+
+
+class Q_Node {
+public:
+	bool val;
+	bool isLeaf;
+	Q_Node* topLeft;
+	Q_Node* topRight;
+	Q_Node* bottomLeft;
+	Q_Node* bottomRight;
+
+	Q_Node() {}
+
+	Q_Node(bool _val, bool _isLeaf, Q_Node* _topLeft, Q_Node* _topRight, Q_Node* _bottomLeft, Q_Node* _bottomRight) {
+		val = _val;
+		isLeaf = _isLeaf;
+		topLeft = _topLeft;
+		topRight = _topRight;
+		bottomLeft = _bottomLeft;
+		bottomRight = _bottomRight;
+	}
+};
+
+ // 将矩阵四分
+vector<vector<int>>  build_config_vector(vector<vector<int>>& grid,int is_left,int is_top)
+{
+	int m = grid.size();
+	int n = grid[0].size();
+	int half = m / 2;
+	vector<vector<int>>	 ans;
+
+	for (int i=(half)*(is_left);i<half*(is_left+1);i++)
+	{
+
+		vector<int >  tt;
+		for (int j = (half)*(is_top); j<half*(is_top + 1); j++)
+		{
+			tt.push_back(grid[i][j]);
+		}
+		ans.push_back(tt);
+	}
+	return ans;
+	
+}
+
+void test_build_config_vector()
+{
+	int a[][8] =
+	{
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,1,1,1,1 },
+		{ 1,1,1,1,1,1,1,1 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+	};
+	vector<vector<int>> grid;// (8, vector<int>(8, ))
+	for (int i=0;i<8;i++)
+	{
+		vector<int> kk(a[i], a[i] + 8);
+		grid.push_back(kk);
+	}
+
+	
+	vector<vector<int>> kkk = build_config_vector(grid, 0, 1);
+
+	return;
+
+}
+
+Q_Node* construct(vector<vector<int>>& grid)
+{
+	Q_Node *ret = new Q_Node();
+	int m = grid.size();
+	int n = grid[0].size();
+	if (m == 1  && n == 1)
+	{
+		ret->val = grid[0][0]==1;
+		ret->isLeaf = true;
+		ret->topLeft = nullptr;
+		ret->topRight = nullptr;
+		ret->bottomLeft = nullptr;
+		ret->bottomRight = nullptr;
+
+		return ret;
+	}
+	vector<vector<int>>	top_left = build_config_vector(grid, 0, 0);
+	auto topLeft = construct(top_left);
+
+	vector<vector<int>>	top_right = build_config_vector(grid, 0, 1);
+	auto topRight = construct(top_right);
+
+	vector<vector<int>>	bottom_left = build_config_vector(grid, 1, 0);
+	auto bottomLeft = construct(bottom_left);
+
+	vector<vector<int>>	bottom_right = build_config_vector(grid, 1, 1);
+	auto bottomRight = construct(bottom_right);
+
+	if (topLeft->isLeaf && topRight->isLeaf && bottomRight->isLeaf && bottomLeft->isLeaf
+			&& topLeft->val == topRight->val && topRight->val == bottomRight->val && bottomRight->val==bottomLeft->val)	   // 需要合并 
+	{
+		bool value = topLeft->val;
+		delete topLeft;
+		delete topRight;
+		delete bottomRight;
+		delete bottomLeft;
+
+		return new Q_Node(value,true, nullptr, nullptr, nullptr, nullptr);
+	}
+	else
+	{
+		return new Q_Node(false, false, topLeft, topRight, bottomLeft, bottomRight);
+	}
+
+	return ret;
+
+}
+
+
+
+void test_construct()
+{
+	int a[][8] =
+	{
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,1,1,1,1 },
+		{ 1,1,1,1,1,1,1,1 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+		{ 1,1,1,1,0,0,0,0 },
+	};
+	vector<vector<int>> grid;// (8, vector<int>(8, ))
+	for (int i = 0; i<8; i++)
+	{
+		vector<int> kk(a[i], a[i] + 8);
+		grid.push_back(kk);
+	}
+
+
+	Q_Node* kkk = construct(grid);
+
+	return;
+}
+
+
+void combinationSum3_helper(int total_level,int sum,int level,vector<vector<int>> &ans,vector<int>&cur,vector<bool> &visited)
+{
+	if (cur.size()==total_level && sum==0)
+	{
+		ans.push_back(cur);
+		return;
+	}
+//	if (level>=total_level)
+//	{
+//		return;
+//	}
+	if (sum<0)
+	{
+		return;
+	}
+	for (int i= level;i<9;i++) //visited[i] 标识 (i+1) 是否被访问
+	{
+	
+	if (!visited[i])
+		{
+			visited[i] = true;
+			cur.push_back(i+1);
+			combinationSum3_helper(total_level, sum - (i+1), i + 1, ans, cur, visited);
+			cur.pop_back();
+			visited[i] = false;
+		}
+		
+	}
+}
+void combinationSum3DFS(int k, int n, int level, vector<int> &out, vector<vector<int> > &res) {
+	if (n < 0) return;
+	if (n == 0 && out.size() == k) res.push_back(out);
+	for (int i = level; i <= 9; ++i) {
+		out.push_back(i);
+		combinationSum3DFS(k, n - i, i + 1, out, res);
+		out.pop_back();
+	}
+}
+
+
+
+vector<vector<int>> combinationSum3(int k, int n) {
+
+	vector<vector<int >> kkkk;
+	vector<vector<int >> ffff;
+	vector<bool>gg(9, false);
+	vector<int> cur;
+	combinationSum3_helper(k, n, 0, kkkk, cur, gg);
+	combinationSum3DFS(k, n, 1, cur, ffff);
+
+
+	return kkkk;
+}
+
+void test_combinationSum3()
+{
+	int k = 2;
+	int n = 5;
+	combinationSum3(k, n);
+}
+
+
+class TtNode
+{
+public:
+	bool is_word;
+
+	TtNode *child[26];
+
+	TtNode():is_word(false)
+	{
+		for (auto &a : child)
+			a = nullptr;
+	}
+};
+
+
+void insert(TtNode *node, string word)
+{
+	for (char c : word)
+	{
+		int index = c - 'a';
+		if (!node->child[index])
+		{
+			node->child[index] = new TtNode();
+		}
+		node = node->child[index];
+	}
+	node->is_word = true;
+}
+
+string find_prefix(TtNode *node, string word)
+{
+	/*string cur = "";
+	for (char c : word)
+	{
+		int index = c - 'a';
+		if (!node->child[index])
+		{
+			break;
+		}
+		else
+		{
+			cur.push_back(c);
+		}
+
+		if (node->is_word)
+		{
+			return	cur;
+		}
+
+		node = node->child[index];
+	}
+	return cur;*/
+
+	/**/
+	string cur = "";
+	for (char c : word)
+	{
+		int index = c - 'a';
+		if (!node->child[index])
+		{
+			break;
+		}
+		else
+		{
+			cur.push_back(c);
+		}
+
+		node = node->child[index];
+		cout << "kkkk" << char(index)<<node->is_word<<endl;
+
+		if (node->is_word)
+		{
+			return	cur;
+		}
+
+	}
+	return word;
+
+}
+
+string replaceWords(vector<string> &dict,string sentence)
+{
+	string res = "", t = "";
+	istringstream is(sentence);
+	TtNode *root = new TtNode();
+	for (string word:dict)
+	{
+		insert(root, word);
+	}
+	while (is>>t)
+	{
+		if (!res.empty())
+		{
+			res += " ";
+		}
+		res += find_prefix(root, t);
+	}
+	return res;
+}
+
+
+
+ void test_replaceWords()
+ {
+	 vector<string>  words = {"cat","bat","rat"};
+	 string sentence = "the cattle was rattled by the battery";
+	string ccc =  replaceWords(words, sentence);
+	cout << "111" << ccc << "211";
+ }
+
+
+# if 0
+class TrieNode
+{
+public:
+	TrieNode *word[26];
+	bool is_leaf;
+	TrieNode():is_leaf(false)
+	{
+		for (int i = 0; i < 26; i++)
+		{
+			word[i] = nullptr;
+		}
+	}
+};
+
+class Trie {
+public:
+	TrieNode *root;
+	/** Initialize your data structure here. */
+	Trie() {
+		root = new TrieNode();
+	}
+
+	/** Inserts a word into the trie. */
+	void insert(string word) {
+		TrieNode *p = root; // 要记录最后一个节点的位置,下次直接在后面挂载;
+		for (int i=0;i<word.size();i++)
+		{
+			auto temp = new TrieNode();
+			p->word[word[i] - 'a'] = temp;
+			if(i==word.size()-1)
+			{
+				p->is_leaf = true;
+			}
+			p = temp;
+		}
+	}
+
+	/** Returns if the word is in the trie. */
+	bool search(string word) {
+		TrieNode *q = root;
+		for (int i = 0; i< word.size(); i++)
+		{
+			if (q->word[word[i]-'a']==nullptr)
+			{
+				return  false;
+			}
+			q = q->word[word[i] - 'a'];
+		}
+		return q->is_leaf == true;
+	}
+
+	/** Returns if there is any word in the trie that starts with the given prefix. */
+	bool startsWith(string prefix) {
+		TrieNode *q = root;
+		for (int i = 0; i<prefix.size(); i++)
+		{
+			if (q->word[prefix[i] - 'a'] == nullptr)
+			{
+				return  false;
+			}
+			q = q->word[prefix[i] - 'a'];
+		}
+		return true;
+	}
+
+};
+
+#endif
+
+
+class TrieNode
+{
+public:
+	TrieNode * child[26];
+	bool is_word;
+	TrieNode():is_word(false)
+	{
+		for (int i = 0; i < 26; i++)
+		{
+			child[i] = nullptr;
+		}
+	}
+};
+
+class Trie
+{
+public:
+
+	TrieNode *root;
+
+	Trie() {
+		root = new TrieNode();
+	}
+
+	/** Inserts a word into the trie. */
+	void insert(string word) {
+		TrieNode *p = root;
+
+		for (int i=0;i<word.size();i++)
+		{
+			int index = word[i] - 'a';
+			TrieNode *temp = new TrieNode();
+			if (!p->child[index])  // 如果是空的	需要填充一个	 如果不是空的就不用插入  apple app
+			{
+				p->child[index] = temp;
+			}
+
+			p = p->child[index];
+		}
+		p->is_word = true;
+	}
+
+	/** Returns if the word is in the trie. */
+	bool search(string word) 
+	{
+		
+		TrieNode *p = root;
+
+		for (int i=0;i<word.size();i++)
+		{
+			int index = word[i] - 'a';
+			if (!p->child[index])
+			{
+				return false;
+			}
+			p = p->child[index];
+		}
+		return p->is_word;
+	}
+
+	/** Returns if there is any word in the trie that starts with the given prefix. */
+	bool startsWith(string prefix) 
+	{
+		TrieNode *p = root;
+
+		for (int i = 0; i< prefix.size(); i++)
+		{
+			int index = prefix[i] - 'a';
+			if (!p->child[index])
+			{
+				return false;
+			}
+			p = p->child[index];
+		}
+		return true;
+	}
+
+};
+
+void test_trie_tree()
+{
+	Trie *trie = new Trie();
+	trie->insert("apple");
+	cout << " 111    " << trie->search("app") << endl;
+	cout << " 111    " << trie->search("apple") << endl;
+	cout << " 111    " << trie->startsWith("apple") << endl;
+    trie->insert("app");
+	cout << " 111    " << trie->search("app") << endl;
+	
+	return;
+}
+
+
+bool is_pattern(const string& A, const string& B)
+{
+	if (A.size() != B.size())
+	{
+		return false;
+	}
+	int AA[26];
+	memset(AA, -1, sizeof(AA));
+	int BB[26];
+	memset(BB, -1, sizeof(BB));
+
+
+
+	for (int i = 0; i < A.size(); i++)
+	{
+		if (AA[A[i]-'a']>-1) //存在
+		{
+			if (AA[A[i] - 'a'] != B[i] - 'a')
+			{
+				return false;
+			}
+		}
+		else
+		{
+			AA[A[i] - 'a'] = B[i] - 'a';
+		}
+
+
+		if (BB[B[i] - 'a']>-1) //存在
+		{
+			if (BB[B[i] - 'a'] != A[i] - 'a')
+			{
+				return false;
+			}
+		}
+		else
+		{
+			BB[B[i] - 'a'] = A[i] - 'a';
+		}
+	}
+
+	return true;
+}
+
+vector<string> findAndReplacePattern(vector<string>& words, string pattern) {
+	vector<string> ssss;
+
+	for (auto word :words)
+	{
+		if (is_pattern(word,pattern))
+		{
+			ssss.push_back(word);
+		}
+	}
+	return ssss;
+}
+
+
+
+
+void test_is_pattern()
+{
+	string aa("mee");
+	string bb("tcc");
+    cout<<"  11122  "<<	is_pattern(aa, bb)<<endl;
+	return;
+}
+
+void test_findAndReplacePattern()
+{
+	vector<string> ss({ "abc","deq","mee","aqq","dkd","ccc" });
+	auto sss("abb");
+	findAndReplacePattern(ss, sss);
+
+}
+
+int maxProfit1(vector<int>& prices)
+{
+	if (prices.size()==0)
+	{
+		return 0;
+	}
+	int max = -1;
+	for (int i = 0; i < prices.size() - 1; i++)
+	{
+		int tmp_max = -1;
+		for (int j = i + 1; j < prices.size(); j++)
+		{
+			int tmp = prices[j] - prices[i];
+			if (tmp > tmp_max)
+			{
+				tmp_max = tmp;
+			}
+		}
+		if (tmp_max > max)
+		{
+			max = tmp_max;
+		}
+	}
+	return max==-1?0:max;
+}
+
+
+void test_maxProfit1()
+{
+	vector<int> prices = { 7,6,4,3,1 };
+
+	int lll = maxProfit1(prices);
+
+	cout << lll;
+}
+
+
+/*
+ *
+ *
+ * 利润最大为昨天买入,如果今天价格更高那就卖出,这样利润最大;
+ *
+ *
+ */
+int maxProfit2(vector<int>& prices) 
+{
+	if (prices.size() == 0)
+		return 0;
+	int res = 0;
+	for (int i=0;i<prices.size()-1;i++)
+	{
+		if (prices[i]<prices[i+1])
+		{
+			res += prices[i + 1] - prices[i];
+		}
+	}
+	return res;
+}
+
+void test_maxProfit2()
+{
+	vector<int> prices = { 7,6,4,3,1 };
+
+	int lll = maxProfit2(prices);
+
+	cout << lll;
+}
+
+
+int maxProfit3(vector<int>& prices) {
+	return 0;
+}
+
+
+void test_maxProfit3()
+{
+	vector<int> prices = { 3,3,5,0,0,3,1,4 };
+
+	int lll = maxProfit3(prices);
+
+	cout << lll;
+}
+
+
+class SSNode {
+public:
+	int val = NULL;
+	vector<SSNode*> children;
+
+	SSNode() {}
+
+	SSNode(int _val, vector<SSNode*> _children) {
+		val = _val;
+		children = _children;
+	}
+};
+vector<vector<int>> levelOrder(SSNode* root)
+{
+	vector<vector<int >> ans;
+	queue<SSNode *>qqq;
+	qqq.push(root);
+	while (!qqq.empty())
+	{
+		vector<int> ttt;
+		int size = qqq.size();	  // z这个一定在外面的固定值哦 不要写出for循环的值; todo
+		 for (int i=0;i<size;i++)
+		 {
+			 SSNode * ca = qqq.front();
+			 if (ca)
+			 {
+				 ttt.push_back(ca->val);
+			 }
+			 qqq.pop();
+			 if ((ca->children).size()>0)
+			 {
+				 for(int i=0;i<ca->children.size();i++)
+				 {
+					 qqq.push(ca->children[i]);
+				 }
+			 }
+
+		 }
+		 ans.push_back(ttt);
+	}
+
+	return ans;
+
+}
+
+void test_levelOrder()
+{
+
+	SSNode *node_4 = new SSNode(4, {});
+	SSNode *node_5 = new SSNode(5, {});
+	SSNode *node_6 = new SSNode(6, {});
+	SSNode *node_3 = new SSNode(3, {node_4,node_5,node_6});
+
+	SSNode *node_2 = new SSNode(2, {});
+	SSNode *node_1 = new SSNode(1, {node_3,node_2});
+
+	vector<vector<int>>  hhhhh = levelOrder(node_1);
+	
+	return;
+
+
+}
+	  /*
+	   *
+	   * 当 a b 相等的时候 灭有返回-1
+	   * 当 a!=b 时最长为a最长的长度;
+	   *
+	   */
+int findLUSlength(string a, string b) 
+{
+	int m = a.size();
+	int n = b.size();
+	if (a==b)
+	{
+		return -1;
+	}
+	else
+	{
+		return m > n ? m : n;
+	}
+
+}
+
+
+void test_findLUSlength()
+{
+	string a("aba");
+	string b("cdc");
+
+	findLUSlength(a, b);
+
+}
+
+
+
+
+string reverseOnlyLetters(string S) 
+{
+	int left = 0;
+	int rignt = S.size() - 1;
+	while (left<rignt)
+	{
+		while (!isalpha(S[left])&&left<=rignt)
+		{
+			left++;
+		}
+
+		while (!isalpha(S[rignt])&&left<=rignt)
+		{
+			rignt--;
+		}
+		if (left<rignt)
+		{
+			swap(S[left], S[rignt]);
+		}
+		left++;
+		rignt--;
+	}
+	return S;
+}
+
+void test_reverseOnlyLetters()
+{
+	//string aa = "Test1ng-Leet=code-Q!";
+	string aa = "7_28]";
+	aa = reverseOnlyLetters(aa);
+	return;
+}
+
+void shift_string(string &A)
+{
+	rotate(A.begin(), A.begin() + 1,A.end());
+}
+
+bool rotateString(string A, string B) {
+	if (A.size() == 0 && B.size() == 0)
+		return true;
+	for (int i=1;i<A.size();i++)
+	{
+		shift_string(A);
+		cout << "aaaa" << A<< endl;
+		if (A==B)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void test_rotateString()
+{
+	string aaaa("abcde");
+	string bbbb("abced");
+
+	bool ttt = rotateString(aaaa,bbbb);
+	cout << "aaaa: " << ttt << endl;
+}
+
+void post_walkering(TreeNode *root)
+{
+	
+}
+
+int get_max_left(TreeNode *root)
+{
+	TreeNode *p = root;
+	if (!root)
+	{
+		return 0;
+	}
+	while (p->right)
+	{
+		p = p->right;
+	}
+	return p->val;
+
+}
+
+int get_max_right(TreeNode *root)
+{
+	TreeNode *p = root;
+	if (!root)
+	{
+		return 0;
+	}
+	while(p->left)
+	{
+		p = p->left;
+	}
+	return p->val;
+	
+}
+
+int getMinimumDifference1(TreeNode* root,int &min) 
+{
+	if (!root)
+	{
+		return 0;
+	}
+	if (!root->left&&!root->right)
+	{
+		return root->val;
+	}
+	int left = -0xffff;
+	int right = 0xffff;
+	if(root->left)
+		left = get_max_left(root->left);
+	if (root->right)
+		right = get_max_right(root->right);
+
+	int ans = (root->val - left) < (right - root->val) ? (root->val - left) : (right - root->val);
+	if (ans<min)
+	{
+		min = ans;
+	}
+	cout << root->val << "  left " << left << "    right  " << right<<"  ans  "<<ans<<endl;
+
+	if (root->left)
+	{
+		getMinimumDifference1(root->left,min);
+	}
+	if (root->right)
+	{
+		getMinimumDifference1(root->right,min);
+	}
+	return 0;
+
+}
+
+void test_getMinimumDifference()
+{
+	 //[10,5,20,2,8,15,100]
+	TreeNode *node_10 = new TreeNode(10);
+	TreeNode *node_5 = new TreeNode(5);
+	TreeNode *node_20 = new TreeNode(20);
+	TreeNode *node_2 = new TreeNode(2);
+	TreeNode *node_8 = new TreeNode(8);
+	TreeNode *node_15= new TreeNode(15);
+	TreeNode *node_100 = new TreeNode(100);
+	
+	node_5->left = node_2;
+	node_5->right = node_8;
+	
+	node_20->left = node_15;
+	node_20->right = node_100;
+	
+	node_10->left = node_5;
+	node_10->right = node_20;
+    
+ //   TreeNode *node_1 = new TreeNode(1);
+ //   TreeNode *node_3 = new TreeNode(3);
+ //   TreeNode *node_2 = new TreeNode(2);
+
+	int min = 0xffff;
+
+//	node_1->right = node_3;
+//	node_3->left = node_2;
+
+
+	getMinimumDifference1(node_10,min);
+	cout << endl << endl<<min;
+
+
+
+}
+
+int get_next_greater_ele(vector<int>& nums,int index)
+{
+	 for (int i=index+1;i<nums.size()+index;i++)
+	 {
+		 if (nums[i%nums.size()]>nums[index%nums.size()])
+		 {
+			 return nums[i%nums.size()];
+		 }
+	 }
+	 return -1;
+}
+
+vector<int> nextGreaterElements(vector<int>& nums) 
+{
+	vector<int> ans;
+	for (int i=0;i<nums.size();i++)
+	{
+		ans.push_back(get_next_greater_ele(nums, i));
+	}
+	return ans;
+}
+
+void test_nextGreaterElements()
+{
+	vector<int> tttt = { 1,2,3,4,5 };
+	vector<int> kk = nextGreaterElements(tttt);
+
+	return;
+}
+
+int fourSumCount_time_limit_exceeded(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
+	int cnt = 0;
+	  for (auto a:A)
+		  for (auto b:B)
+			  for(auto c:C)
+				  for(auto d:D)
+				  {
+					  if (a+b+c+d==0)
+					  {
+						  cnt++;
+					  }
+				  }
+	  return cnt;
+}
+
+int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
+	int cnt = 0;
+	unordered_map<int, int>ttt;
+	for (auto a:A)
+		for(auto b:B)
+		{
+			++ttt[a + b];
+		}
+	for (auto c : C)
+		for (auto d : D)
+		{
+			int target = -(c + d);
+			cnt += ttt[target];
+		}
+	return cnt;
+}
+
+void test_fourSumCount()
+{
+	
+}
 
 int main() {
 	//std::cout << "hello?";
@@ -2398,12 +3456,37 @@ int main() {
 	//test_minimumDeleteSum();
 	//test_minMoves2();
 	//test_minMoves();
-
 	//test_productExceptSelf();
 	//test_getSum();
 	//test_rotatedDigits();
 	//test_MagicDictionary();
-	//test_numComponents();		 ?
+	//test_numComponents();	?
+	//test_findCircleNum(); ?
+	//test_build_config_vector();
+	//test_construct();
+	//test_combinationSum3();
+	//test_replaceWords();	??
+	//test_trie_tree();
+	//test_findAndReplacePattern();
+	//test_maxProfit1();
+	//test_maxProfit2();
+	//test_maxProfit3();	 ??
+	//test_levelOrder();
+	//test_findLUSlength();
+	//test_reverseOnlyLetters();
+	//test_rotateString();
+	//test_getMinimumDifference();
+	//test_nextGreaterElements();
+	test_fourSumCount();
+
+	
+
+
+
+
+
+
+
 
 
 

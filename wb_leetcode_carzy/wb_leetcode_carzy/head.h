@@ -12,6 +12,7 @@
 #include <map>
 #include <cctype>
 #include <unordered_map>
+#include <sstream>
 
 #include <cstdio>
 #include <cstdlib>
