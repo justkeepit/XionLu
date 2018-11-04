@@ -3404,6 +3404,117 @@ void test_fourSumCount()
 	
 }
 
+class Solution {
+public:
+	Solution(vector<int> nums):kkk(nums) {
+
+	}
+
+	/** Resets the array to its original configuration and return it. */
+	vector<int> reset() {
+		return 	kkk;
+	}
+
+	/** Returns a random shuffling of the array. */
+	vector<int> shuffle() {
+		vector<int> qqq = kkk;
+		for (int i=0;i<qqq.size();i++)
+		{
+//https://yjk94.wordpress.com/2017/03/17/%E6%B4%97%E7%89%8C%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF-knuth-shuffle%E7%AE%97%E6%B3%95/
+			int index = rand() % (qqq.size() - i) + i;  
+			swap(qqq[i], qqq[index]);
+		}
+		return qqq;
+	}
+	vector<int> kkk;
+};
+
+void test_shuffle_array()
+{
+	
+}
+
+
+void floodFill_helper(vector<vector<int>>& image, int sr, int sc,int old_color, int new_color)
+{
+	int m = image.size();
+	int n = image[0].size();
+
+	if (sr>m - 1 || sr<0)
+	{
+		return;
+	}
+	if (sc>n - 1 || sc<0)
+	{
+		return;
+	}
+	if (image[sr][sc] != old_color)
+	{
+		return;
+	}
+	{
+		image[sr][sc] = new_color;
+		floodFill_helper(image, sr + 1, sc,old_color, new_color);
+		floodFill_helper(image, sr - 1, sc,old_color, new_color);
+		floodFill_helper(image, sr, sc + 1,old_color, new_color);
+		floodFill_helper(image, sr, sc - 1,old_color, new_color);
+	}
+}
+
+vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+	if (image[sr][sc]==newColor){
+		return image;
+	}
+	floodFill_helper(image, sr, sc, image[sr][sc], newColor);
+	return image;
+}
+
+vector<vector<int>>  test_floodFill()
+{
+	vector<vector<int>> ttt({ { 1,1,1 },{ 1,1,0 },{ 1,0,1 } });
+	floodFill_helper(ttt, 1, 1,ttt[1][1], 233);
+	return ttt;
+}
+
+
+int BestTimetoBuyandSellStockwithTransactionFee_maxProfit(vector<int>& prices, int fee)
+{
+
+	int m = prices.size();
+	vector<int> dp(m,0);
+
+	dp[0] = 0;
+
+	for (int i = 1; i < prices.size(); i++)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			int tmp_2;
+			if (prices[i]>prices[j])
+			{				
+				int tmp_1 = max(dp[j], (dp[j] + prices[i] - prices[j] - fee));
+				tmp_2 = max(tmp_1, 0);
+			}
+			else
+			{
+				tmp_2 = dp[i - 1];
+			}
+			dp[i] = max(tmp_2, dp[i]);
+		}
+	}
+
+	return dp[m - 1];
+}
+
+
+void test_BestTimetoBuyandSellStockwithTransactionFee_maxProfit()
+{
+	vector<int>prices({ 1, 3, 2, 8, 4, 9 });
+	int fee = 3;
+	BestTimetoBuyandSellStockwithTransactionFee_maxProfit(prices, fee);
+	return;
+}
+
 int main() {
 	//std::cout << "hello?";
 	//test_1();
@@ -3477,7 +3588,11 @@ int main() {
 	//test_rotateString();
 	//test_getMinimumDifference();
 	//test_nextGreaterElements();
-	test_fourSumCount();
+	//test_fourSumCount();
+	//test_shuffle_array();
+	//test_floodFill();
+
+	test_BestTimetoBuyandSellStockwithTransactionFee_maxProfit();
 
 	
 

@@ -583,12 +583,88 @@ void test_matchTemplate()
 	
 }
 
+char *src_find_path = "C:\\Users\\dell\\Desktop\\1.jpg";
+Mat find_src, find_gray_dst;
+int thresh = 100;
+int max_thresh = 255;
+RNG rng(12345);
+
+
+
+void threshold_callback1(int,void *)
+{
+	Mat canny_output;
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+
+	Canny(find_gray_dst, canny_output, 40, thresh * 2, 3);
+
+	findContours(canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+	Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
+
+	for (int i=0;i<contours.size();i++)
+	{
+		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+		drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point());
+	}
+
+	namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+	imshow("Contours", drawing);
+
+
+}
+
+void thresh_callback(int, void*)
+{
+	Mat canny_output;
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+
+	/// 用Canny算子检测边缘
+	Canny(find_gray_dst, canny_output, thresh, thresh * 2, 3);
+	/// 寻找轮廓
+	findContours(canny_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+	/// 绘出轮廓
+	Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
+	for (int i = 0; i< contours.size(); i++)
+	{
+		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+		drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point());
+	}
+
+	/// 在窗体中显示结果
+	namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+	imshow("Contours", drawing);
+}
+
+void test_findContours_drawContours()
+{
+	find_src = imread(src_find_path);
+	cvtColor(find_src, find_gray_dst, CV_BGR2GRAY);
+	blur(find_gray_dst, find_gray_dst, Size(3, 3));
+
+	char *source_window = "Soucre";
+	namedWindow(source_window, CV_WINDOW_AUTOSIZE);
+	imshow(source_window,find_src);
+
+
+	createTrackbar("canny thresh:", "Source", &thresh, max_thresh, thresh_callback);
+
+	thresh_callback(0,0);
+
+	waitKey(0);
+
+	return;
+
+}
 
 int main()
 {
-
-
-	test_matchTemplate();
+	
+	test_findContours_drawContours();
+//	test_matchTemplate();
 //	test_compareHist();
 //	test_draw_hist();
 //	test_equalizeHist();
