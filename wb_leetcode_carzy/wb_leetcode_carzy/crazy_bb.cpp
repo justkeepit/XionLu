@@ -3515,92 +3515,1174 @@ void test_BestTimetoBuyandSellStockwithTransactionFee_maxProfit()
 	return;
 }
 
-int main() {
-	//std::cout << "hello?";
-	//test_1();
-	//test_point();
-	//maxAreaOfIsland_test();
-	//test_recursion_pass(s,&y);
-	//test_backtraceing();
-	//test_BinaryGap();
-	//test_toLowerCase();
-	//test_numJewelsInStones();
-	//test_sortArrayByParity();
-	//test_uniqueMorseRepresentations();
-	//test_constructMaximumBinaryTree();
-	//test_flipAndInvertImage();
-	//test_pruneTree();
-	//test_peakIndexInMountainArray();
-	//test_allPossibleFBT();
-	//test_smallestRangeI();
-	//test_middleNode();
-	//test_spiralOrder();
-	//test_searchBST();
-	//test_postorder();
-	//test_maxDepth();
-	//test_preorder();
-	//test_numSpecialEquivGroups();	   ?
-	//test_uncommonFromSentences();    ?
-	//test_dailyTemperatures();
-	//test_singleNonDuplicate();
-	//test_shortestToChar(); ?
-	//test_hasAlternatingBits();
-	//test_countPrimeSetBits();
-	//test_averageOfLevels();
-	//test_constructFromPrePost(); ?
-	//test_isMonotonic();
-	//test_countSubstrings();
-	//test_largestTriangleArea();	 
-	//test_letterCasePermutation();	
-	//test_scoreOfParentheses();		 ?
-	//test_frequencySort();
-	//test_sort();
-	//local_test();
-	//test_countArrangement();
-	//test_generateParenthesis();
-	//test_combinationSum3();  ?
-	//test_combinationSum();  
-	//test_combinationSum2(); 
-	//test_stoneGame();
-	//test_maxAreaOfIsland();
-	//test_subtreeWithAllDeepest();
-	//test_minimumDeleteSum();
-	//test_minMoves2();
-	//test_minMoves();
-	//test_productExceptSelf();
-	//test_getSum();
-	//test_rotatedDigits();
-	//test_MagicDictionary();
-	//test_numComponents();	?
-	//test_findCircleNum(); ?
-	//test_build_config_vector();
-	//test_construct();
-	//test_combinationSum3();
-	//test_replaceWords();	??
-	//test_trie_tree();
-	//test_findAndReplacePattern();
-	//test_maxProfit1();
-	//test_maxProfit2();
-	//test_maxProfit3();	 ??
-	//test_levelOrder();
-	//test_findLUSlength();
-	//test_reverseOnlyLetters();
-	//test_rotateString();
-	//test_getMinimumDifference();
-	//test_nextGreaterElements();
-	//test_fourSumCount();
-	//test_shuffle_array();
-	//test_floodFill();
+class Solution_1 {
+public:
+	/** @param head The linked list's head.
+	Note that the head is guaranteed to be not null, so it contains at least one node. */
+	Solution_1(ListNode* head) {
+		root = head;
+	}
 
-	test_BestTimetoBuyandSellStockwithTransactionFee_maxProfit();
+	/** Returns a random node's value. */
+	int getRandom() {
+		int cnt = 0;
+		ListNode *p = this->root;
+		while (p)
+		{
+			p = p->next;
+			cnt++;
+		}
+		p = this->root;
+		int index = rand() % cnt;
+		int gg = 0;
+		while (gg<index)
+		{
+			p = p->next;
+			gg++;
+		}
+		return p->val;
+	}
+
+	ListNode *root;
+};
+
+
+vector<int> depose(int KKK)
+{
+	vector<int> ttt;
+	int tmp = KKK;
+	while (tmp>0)
+	{
+		ttt.push_back(tmp % 10);
+		tmp /= 10;
+	}
+	reverse(ttt.begin(),ttt.end());
+	return ttt;
+}
+
+int get_N_nums_(int N)
+{
+	int nums = 0;
+	int tssss = N;
+	while (tssss>0)
+	{
+		tssss /= 10;
+		nums++;
+	}
+	return nums;
+}
+
+vector<vector<int>> get_N_nums_of_2_power(int N)
+{
+	vector<vector<int>> all_;
+	int wei = get_N_nums_(N);
+	int i = 1;
+	while (i <= N)
+	{
+		i <<= 1;
+	}
+	int up_max = i / 2;
+	if (get_N_nums_(up_max) < wei)
+		up_max <<= 1;
+	int down_min = i / 2;
+	if (get_N_nums_(down_min) < wei)
+		up_max <<= 1;
+	while (up_max<10 * N)
+	{
+		if (get_N_nums_(up_max) != wei)
+		{
+			break;
+		}
+		vector<int >ssss = depose(up_max);
+		all_.push_back(ssss);
+		up_max <<= 1;
+	}
+
+	while (down_min >= N / 10 && down_min != 0)
+	{
+		if (get_N_nums_(down_min) != wei)
+		{
+			break;
+		}
+		vector<int >ssss = depose(down_min);
+		all_.push_back(ssss);
+		down_min >>= 1;
+	}
+	return all_;
+}
+
+long counter(int N) {
+	long res = 0;
+	for (; N; N /= 10) res += pow(10, N % 10);
+	return res;
+}
+
+bool reorderedPowerOf2_1(int N) {
+	long c = counter(N);
+	for (int i = 0; i < 32; i++)
+		if (counter(1 << i) == c) {
+			cout << " 1111111      " << c;
+			return true;
+		}
+	return false;
+}
+
+
+
+
+bool reorderedPowerOf2(int N) {
+	vector<vector<int>> all_ = get_N_nums_of_2_power(N);
+	vector<int> ttt = depose(N);
+	sort(ttt.begin(), ttt.end());
+	do {
+		if (ttt[0]==0)
+		{
+			continue;
+		}
+		for (int h=0;h<all_.size();h++)
+		{
+			if (ttt==all_[h])
+			{
+				 return true;
+			}
+		}
+	} while (next_permutation(ttt.begin(), ttt.end()));
+
+	return false;
+}
+
+void  test_reorderedPowerOf2()
+{
+	cout<<"  11111  "<<reorderedPowerOf2_1(16617277);
+}
+
+void add_one(vector<vector<int>> &map,int m,int n)
+{
+	for (int i=0;i<m;i++)
+	{
+		for (int j=0;j<n;j++)
+		{
+			map[i][j] += 1;
+		}
+	}
+}
+
+int get_max(vector<vector<int>>& map)
+{
+	int m = map.size();
+	int max = -1;
+	for (int i=0;i<m;i++)
+	{
+		int tmp =  * max_element(map[i].begin(), map[i].end());
+		if (tmp>max)
+		{
+			max = tmp;
+		}
+	}
+	return max;
+}
+
+
+int get_sum_matrix(vector<vector<int>>& map)
+{
+	int max = get_max(map);
+	int sum = 0;
+	int m = map.size();
+	int n = map[0].size();
+	for (int i=0;i<m;i++)
+	{
+		for (int j=0;j<n;j++)
+		{
+			if (map[i][j]==max)
+			{
+				sum += 1;
+			}
+		}
+	}
+	return sum;
+}
+
+int maxCount(int m, int n, vector<vector<int>>& ops) {
+	vector<vector<int>> map(m, vector<int>(n, 0));
+	int t = ops.size();
+	
+
+	for (int i=0;i<t;i++)
+	{
+		add_one(map, ops[i][0], ops[i][1]);	
+	}
+	return get_sum_matrix(map);
+}
+
+
+int maxCount_1(int m, int n, vector<vector<int>>& ops) {
+	int row = ops.size();
+	if (row==0)
+	{
+		return m*n;
+	}
+	int col = ops[0].size();
+	int min_row = 0xfffffff;
+	int min_col = 0xfffffff;
+	for (int i=0;i<row;i++)
+	{
+		if (ops[i][0]<min_row)
+		{
+			min_row = ops[i][0];
+		}
+	}
+
+	for (int i = 0; i<row; i++)
+	{
+		if (ops[i][1]<min_col)
+		{
+			min_col = ops[i][1];
+		}
+	}
+	min_row = min(min_row, m);
+	min_col = min(min_col, n);
+
+	return min_col*min_row;
+}
+
+void test_maxCount()
+{
+	int m = 92;
+	int n = 2;
+	vector<vector<int>> op({ { 70,1 },{ 37,1 },{ 3,2 },{ 67,1 },{ 37,2 },{ 87,2 },{ 26,1 },{ 43,1 },
+	{ 19,1 },{ 63,1 },{ 67,1 },{ 19,1 },{ 14,2 },{ 5,1 },{ 27,2 },{ 44,2 },{ 13,1 } });
+
+	std:: cout << "    1111    " << maxCount_1(m, n, op);
+}
+
+
+//获取倒数第k个链表元素  不能获取其长度
+ListNode *get_Kth_node(ListNode *root,int k)    
+{
+	ListNode * ahead = root;
+	ListNode * behind = root;
+	int index = 0;
+	while (index<k)
+	{
+		ahead = ahead->next;
+		index++;
+	}
+	while (ahead)
+	{
+		ahead = ahead->next;
+		behind = behind->next;
+	}
+	return behind;
+}
+int get_linklist_length(ListNode *root)
+{
+	int len = 0;
+	while (root)
+	{
+		root = root->next;
+		len++;
+	}
+	return len;
+}
+
+ListNode * make_linklist(vector<int> ss)
+{
+	if (ss.size()==0)
+	{
+		return nullptr;
+	}
+
+	int i = 1;
+	ListNode *head = new ListNode(ss[0]);
+	ListNode *tail = head;
+
+	for (;i<ss.size();i++)
+	{
+		auto node = new ListNode(ss[i]);
+		tail->next = node;
+		tail = node;
+	}
+	return head;
+}
+
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+	int len_1 = get_linklist_length(l1);
+	int len_2 = get_linklist_length(l2);
+	int longer = len_1 >= len_2 ? len_1 : len_2;
+	int shorter = len_1 > len_2 ? len_2 : len_1;
+	ListNode *list_longer = longer == len_1 ? l1 : l2;
+	ListNode *list_short = shorter == len_2 ? l2 : l1;
+
+	vector<pair<int, int>> sss;
+
+	// 处理开始的情况
+	
+	int shorter_num_0 = get_Kth_node(list_short,1)->val;
+	int longer_num_0 = get_Kth_node(list_longer,1)->val;
+	int carry_0 = (shorter_num_0 + longer_num_0) >= 10;
+	int num_0 = (shorter_num_0 + longer_num_0) % 10;
+
+	pair<int, int> ttt = make_pair(carry_0, num_0);
+	sss.push_back(ttt);
+
+	int i = 0;
+
+	for (i=1;i<shorter;i++)
+	{
+		int carray = 0;
+		int shorter_num = get_Kth_node(list_short, i + 1)->val;
+		int longer_num = get_Kth_node(list_longer, i + 1)->val;
+		carray = (shorter_num + longer_num + sss[i - 1].first) >= 10;
+		int num = (shorter_num + longer_num+ sss[i - 1].first) % 10;
+		pair<int, int> tt = make_pair(carray, num);
+		sss.push_back(tt);
+	}
+	
+	
+	while(i<longer)
+	{
+		int val = get_Kth_node(list_longer, i + 1)->val;
+		int sum = val + sss[i-1].first;
+		int carry_end = 0;
+		int sum_end = sum;
+		if (sum>=10)
+		{
+			carry_end = 1;
+			sum_end = sum % 10;
+		}
+		pair<int, int> ss = make_pair(carry_end, sum_end);
+		sss.push_back(ss);
+		i++;
+	}
+
+	if (sss[sss.size() - 1].first == 1)
+	{
+		sss.push_back(make_pair(0, 1));
+	}
+
+
+	vector<int> ans;
+	for (int k=0;k<sss.size();k++)
+	{
+		ans.push_back(sss[k].second);
+	}
+	reverse(ans.begin(), ans.end());
+	return make_linklist(ans);
 
 	
 
+}
+
+void test_addTwoNumbers()
+{
+	/* */
+	ListNode *node_7 = new ListNode(7);
+	ListNode *node_2 = new ListNode(2);
+	ListNode *node_4_0 = new ListNode(4);
+	ListNode *node_3 = new ListNode(3);
 
 
 
+	ListNode *node_5 = new ListNode(5);
+	ListNode *node_6 = new ListNode(6);
+	ListNode *node_4_1 = new ListNode(4);
+
+	node_7->next = node_2;
+	node_2->next = node_4_0;
+	node_4_0->next = node_3;
 
 
+	node_5->next = node_6;
+	node_6->next = node_4_1;
+
+	ListNode* ans = addTwoNumbers(node_7, node_5);
+//	ListNode* ans_k = get_Kth_node(node_7, 1);
+
+//	ListNode *list = make_linklist({ 1,2,3,4,4,5,6 });
+	return;
+	
+	/*ListNode *node_2 = new ListNode(2);
+
+	ListNode *node_8 = new ListNode(8);
+	ListNode *node_9 = new ListNode(9);
+
+	node_9->next = node_8;
+
+	ListNode* ans = addTwoNumbers(node_2, node_9);	 */
+	int a = 2 + 4;
+	return;
+	
+}
+
+int hammingDistance(int x, int y) {
+	int cnt = 0;
+	for (int i=0;i<32;i++)
+   {																						 
+		int x_ = 1 << i;
+		int y_ = 1 << i;
+	    if ((x&x_)^(y&y_))
+	    {
+		   cnt++;
+	    }
+   }
+	return cnt;
+}
+
+void test_hammingDistance()
+{
+	int x = 14;
+	int y = 4;
+	cout << "  1   " << hammingDistance(x, y);
+}
+
+int totalHammingDistance(vector<int>& nums) {
+	int ans = 0;
+	for (int i=0;i<32;i++)
+   {
+		int nums_of_1 = 0;
+	   	for (auto num :nums)
+	   	{
+			int sss = 1 << i;
+		    if (sss&num)
+		    {
+			   nums_of_1++;
+		    }
+	   	}
+		ans += nums_of_1*(nums.size() - nums_of_1);		
+   }
+	return ans;
+}
+
+
+void test_totalHammingDistance()
+{
+	vector<int > hhhh({ 4,14,2 });
+	int kkk = totalHammingDistance(hhhh);
+	cout << "  kkk   " << kkk;
+}
+
+
+int get_max_bst(TreeNode *root)
+{
+	if (!root)
+	{
+		return 0;
+	}
+	TreeNode *p = root;
+	while (p->right)
+	{
+		p = p->right;
+	}
+	return p->val;
+}
+
+int get_min_bst(TreeNode *root)
+{
+	if (!root)
+	{
+		return 0;
+	}
+	TreeNode *p = root;
+	while (p->left)
+	{
+		p = p->left;
+	}
+	return p->val;
+}
+
+int get_min_dis_bst(TreeNode *root)
+{
+	if (!root)
+	{
+		return 0xfffff;
+	}
+	if (root->left==NULL&&root->right==NULL)
+	{
+		return 0xffff;
+	}
+
+	int  max_left = root->val;
+	int  min_right = root->val;
+
+	if (root->left)
+	{
+		max_left = get_max_bst(root->left);	
+	}
+
+	if (root->right)
+	{
+		min_right = get_min_bst(root->right);
+	}
+	
+	return (root->val - max_left, min_right - root->val);
+}
+
+int minDiffInBST(TreeNode* root) 
+{
+	if (!root)
+	{
+		return 0;
+	}
+	int left = get_min_dis_bst(root->left);
+	int right = get_min_dis_bst(root->right);
+
+	return min(left, right);
+	
+}
+
+void test_minDiffInBST()
+{ /*
+
+
+	
+	TreeNode *node_4 = new TreeNode(4);
+	TreeNode *node_2 = new TreeNode(2);
+	TreeNode *node_6 = new TreeNode(6);
+	TreeNode *node_1 = new TreeNode(1);
+	TreeNode *node_3 = new TreeNode(3);
+
+	node_4->left = node_2;
+	node_4->right = node_6;
+	node_2->left = node_1;
+	node_2->right = node_3;
+
+	int min_diff = minDiffInBST(node_4);
+	cout << "111   " << min_diff;
+ 
+
+
+	TreeNode *node_1 = new TreeNode(1);
+	TreeNode *node_0 = new TreeNode(0);
+	TreeNode *node_48 = new TreeNode(48);
+	TreeNode *node_12 = new TreeNode(12);
+	TreeNode *node_49 = new TreeNode(49);
+
+	node_1->left = node_0;
+	node_1->right = node_48;
+	node_48->left = node_12;
+	node_48->right = node_49;
+
+	int min_diff = minDiffInBST(node_1);
+	cout << "111   " << min_diff;
+	
+*/
+
+	TreeNode *node_27 = new TreeNode(27);
+	TreeNode *node_34 = new TreeNode(34);
+	TreeNode *node_58 = new TreeNode(58);
+	TreeNode *node_50 = new TreeNode(50);
+	TreeNode *node_44 = new TreeNode(44);
+
+	node_27->right = node_34;
+	node_34->right = node_58;
+	node_58->left = node_50;
+	node_50->left = node_44;
+
+	int min_diff = minDiffInBST(node_27);
+	cout << "111   " << min_diff;
+}
+
+TreeNode* sortedArrayToBST(vector<int>& nums,int left_index,int right_index) {
+	if (left_index>right_index)
+	{
+		return NULL;
+	}
+	int mid_index = (left_index + right_index) / 2;
+	TreeNode *root = new TreeNode(nums[mid_index]);
+	root->left = sortedArrayToBST(nums,left_index, mid_index-1);
+	root->right = sortedArrayToBST(nums, mid_index + 1, right_index);
+	return root;
+}
+
+TreeNode *sortedArrayToBST1(vector<int> &num, int left, int right) {
+	if (left > right) return NULL;
+	int mid = (left + right) / 2;
+	TreeNode *cur = new TreeNode(num[mid]);
+	cur->left = sortedArrayToBST1(num, left, mid - 1);
+	cur->right = sortedArrayToBST1(num, mid + 1, right);
+	return cur;
+}
+
+void test_sortedArrayToBST()
+{
+	vector<int> sss = { -10,-3,0,5,9 };
+	TreeNode *ans = sortedArrayToBST1(sss, 0, sss.size() - 1);
+	return;
+}
+
+vector<int> twoSum(vector<int>& numbers, int target) {
+	vector<int> ans;
+	int start = 0;
+	int end = numbers.size() - 1;
+
+	while (start<end)
+	{
+		while (numbers[start] + numbers[end]>target&&start<end)
+		{
+			end--;
+		}
+		while (numbers[start] + numbers[end]<target&&start<end)
+		{
+			start++;
+		}
+		if (numbers[start] + numbers[end] == target&&start<end)
+		{
+			ans.push_back(start + 1);
+			ans.push_back(end + 1);
+			return ans;
+		}
+	//	start++;
+	//	end--;
+	}
+	
+	
+	return {};
+}
+
+void test_twoSum()
+{
+	vector<int> nums = { 3,3,5,8,18,21,22,22,22,24,26,28,29,31,31,34,37,37,40,43,43,43,44,47,48,51,51,51,52,54,55,56,59,59,60,74,74,76,76,81,82,82,82,85,89,91,91,94,99,101,101,106,116,118,121,126,127,128,128,128,131,134,135,138,140,143,145,151,152,153,154,156,158,158,158,160,169,173,174,177,178,180,189,190,190,191,191,196,197,203,203,206,206,206,208,210,212,215,216,218,218,219,223,225,227,229,232,232,233,234,235,235,236,237,238,239,245,249,250,251,254,254,256,260,261,262,270,271,271,274,275,284,285,286,290,290,291,292,292,293,293,293,295,299,300,304,304,305,310,313,313,315,322,326,327,329,334,336,337,339,339,340,341,343,344,347,347,356,356,359,359,361,364,364,368,368,369,376,378,380,380,380,386,387,389,391,391,397,399,404,405,413,415,418,418,423,426,428,429,430,432,434,437,439,459,460,461,461,463,472,479,480,484,484,486,487,492,494,498,499,500,501,501,504,505,505,507,513,517,517,519,519,522,525,525,529,530,530,533,536,537,538,539,542,544,553,557,561,561,564,567,568,568,570,570,572,574,575,575,579,580,581,582,590,591,594,594,597,600,605,607,608,611,614,615,615,619,621,622,623,626,627,628,630,631,632,634,638,640,641,642,648,648,649,659,662,668,673,678,678,682,682,683,683,686,686,687,691,692,693,698,700,700,706,711,711,712,714,714,718,722,727,730,730,733,733,741,744,745,747,749,754,755,755,758,760,762,763,764,769,770,771,771,776,777,784,785,789,790,792,795,795,796,797,798,806,806,806,809,812,813,815,819,820,823,827,830,837,840,843,848,850,851,851,852,857,858,858,859,861,863,866,869,869,873,874,874,883,885,887,889,891,893,899,901,903,905,905,905,909,912,917,919,920,921,922,926,935,940,941,944,945,946,947,948,950,950,951,952,956,956,959,962,964,965,968,970,971,971,972,973,976,978,982,983,985,985,988,989,991,994,994,995,995,997,997 };
+	int target = 101;
+	vector<int> ans = twoSum(nums, target);
+	return;
+}
+
+int findContentChildren(vector<int>& greed, vector<int>& cookie) {
+	sort(cookie.begin(), cookie.end());
+	sort(greed.begin(), greed.end());
+	int cnt = 0;
+	int start_index_greed = 0;
+	for (int i=0;i<cookie.size();i++)
+	{
+		if(cookie[i]>=greed[start_index_greed])
+		{
+			cnt++;
+			++start_index_greed;
+			if (start_index_greed>=greed.size())
+			{
+				break;
+			}
+		}
+	}
+
+	return cnt;
+}
+
+void test_findContentChildren()
+{
+	vector<int> g = {1,2,3};
+	vector<int> s = { 1,1 };
+	cout << " 111   " << findContentChildren(g, s);
+	return;
+}
+
+bool func(int a,int b)
+{
+	return a > b;
+}
+
+bool  swimInWater_help(vector<vector<int>> &grid,int i,int j,int value,vector<vector<bool>> &visited,vector<int>& cur)
+{
+	cout << grid[i][j] << endl;
+	int  m = grid.size();
+	int n = grid[0].size();
+	if(i<0||j>m-1)
+	{
+		return false;
+	}
+	if (j<0||j>n-1)
+	{
+		return false;
+	}
+	if (i==m-1&&j==n-1)
+	{
+		cout << cur.size();
+		return true;
+	}
+	if (!visited[i][j])
+	{
+		visited[i][j] = true;
+		cur.push_back(grid[i][j]);
+		if ((i-1>=0)&&func(grid[i-1][j],value))
+		{
+			swimInWater_help(grid, i - 1, j, grid[i - 1][j], visited,cur);			
+		}
+		cur.pop_back();
+
+
+		cur.push_back(grid[i][j]);
+
+		if((i+1<m)&&func(grid[i+1][j],value))
+		{
+			swimInWater_help(grid, i + 1, j, grid[i + 1][j], visited,cur);
+		}
+		cur.pop_back();
+
+
+		cur.push_back(grid[i][j]);
+
+		if ((j - 1 >= 0)&&func(grid[i][j - 1],value))
+		{
+			swimInWater_help(grid, i, j-1, grid[i][j-1], visited,cur);
+		}
+		cur.pop_back();
+
+
+		cur.push_back(grid[i][j]);
+
+		if ((j + 1<n)&&func(grid[i][j+1],value))
+		{
+			swimInWater_help(grid, i , j + 1, grid[i][j+1], visited,cur);
+		}
+
+		cur.pop_back();
+
+	}
+}
+
+int swimInWater(vector<vector<int>>& grid) 
+{
+	int  m = grid.size();
+	int  n = grid[0].size();
+	vector<int> cur;
+	vector<vector<bool>> visited(m, vector<bool>(n, false));
+	cout << " 33333  " << endl;
+	cout<< swimInWater_help(grid, 0, 0, grid[0][0], visited,cur);
+	return 0;
+}
+
+void test_swimInWater()
+{
+	vector<vector<int>> grid({
+		{ 0, 1, 2, 3, 4 } ,
+		{ 24,23,22,21,5 },
+		{ 10, 9, 8, 7,6 },
+		{ 11, 7, 8, 9,1 },
+		{ 12, 13,14,15,16 },
+	});
+	swimInWater(grid);
+}
+
+void dfs(TreeNode *root,vector<int> &path)
+{
+	if (!root)
+	{
+		return;
+	}
+	dfs(root->left,path);
+	path.push_back(root->val);
+	dfs(root->right,path);
+}
+
+
+int kthSmallest(TreeNode* root, int k) {
+	vector<int >ans;
+	dfs(root, ans);
+	return ans[k - 1];
+}
+
+void  test_kthSmallest()
+{
+	TreeNode *node_3 = new TreeNode(3);
+	TreeNode *node_1 = new TreeNode(1);
+	TreeNode *node_4 = new TreeNode(4);
+	TreeNode *node_2 = new TreeNode(2);
+
+	TreeNode *node_5 = new TreeNode(5);
+	TreeNode *node_6 = new TreeNode(6);
+	node_5->left = node_3;
+	node_5->right = node_6;
+
+	node_3->left = node_2;
+	node_3->right = node_4;
+
+	node_2->left = node_1;
+
+	cout << "1122332  " << kthSmallest(node_5, 3);
+}
+
+class Solution_pick_array {
+public:
+	Solution_pick_array(vector<int> nums):ans(nums) {
+
+	}
+
+	int pick(int target) {
+		int cnt = 0;
+		int res = -1;
+	    for (int i=0;i<ans.size();i++)
+	    {
+		    if (ans[i]!=target)
+		    {		  
+				continue;
+		    }
+			++cnt;
+		    if (rand()%cnt==0)
+		    {
+				res = i;
+		    }
+	    }
+		return res;
+	}
+	vector<int> ans;
+};
+
+vector<int> sortArrayByParityII(vector<int>& A) {
+	int odd_index = 1;
+	int even_index = 0;
+	while (odd_index<A.size()&&even_index<A.size())
+	{
+		while(A[odd_index]%2==1&&odd_index<A.size())  // 找到满足交换的odd_index 此时odd_index 应该是指向偶数,才可以满足交换
+		{
+			odd_index += 2;
+		}
+		while (A[even_index]%2==0&&even_index<A.size())// 找到满足交换的evn_index 此时even_index 应该是指向奇数,才可以满足交换
+		{
+			even_index += 2;
+		}
+		if (odd_index>A.size()-1||even_index>A.size()-1)
+		{
+			break;
+		}
+	//	if(A[odd_index]%2==0&&A[even_index]%2==1)
+		{
+			swap(A[odd_index], A[even_index]);
+		}
+	}
+	return A;
+}
+
+void test_sortArrayByParityII()
+{
+	vector<int> ss = {3,4 };
+    vector<int> ll = sortArrayByParityII(ss);
+	return;
+}
+
+
+vector<int> get_link_index_part_(int all,int k)
+{
+	int s = all / k;
+	int l = all%k;
+	vector<int> ans(k, s);
+	for (int i=0;i<l;i++)
+	{
+		ans[i] += 1;
+	}
+	return ans;
+}
+
+vector<ListNode*> splitListToParts(ListNode* root, int k) {
+	int all = get_linklist_length(root);
+	vector<int> kkk = get_link_index_part_(all, k);
+	ListNode* head = root;
+	vector<ListNode *> ans;
+	for (int i=0;i<kkk.size();i++)
+	{
+		int cnt = 0;
+		//ListNode * font = ;
+		//ListNode *tmp = ;
+		ans.push_back(head);
+		while (cnt<kkk[i]-1)
+		{
+			head = head->next;
+			cnt++;
+		}
+		if (head)
+		{
+			ListNode *tmp = head->next;
+			head->next = NULL;
+			head = tmp;
+		}
+		
+	}
+	return ans;
+}
+
+void test_splitListToParts()
+{
+	ListNode *node_1 = new ListNode(1);
+	ListNode *node_2 = new ListNode(2);
+	ListNode *node_3 = new ListNode(3);
+	ListNode *node_4 = new ListNode(4);
+	ListNode *node_5 = new ListNode(5);
+	ListNode *node_6 = new ListNode(6);
+	ListNode *node_7 = new ListNode(7);
+	ListNode *node_8 = new ListNode(8);
+	ListNode *node_9 = new ListNode(9);
+	ListNode *node_10 = new ListNode(10);
+
+	node_1->next = node_2;
+	node_2->next = node_3;
+	node_3->next = node_4;
+//	node_4->next = node_5;
+//	node_5->next = node_6;
+//	node_6->next = node_7;
+//	node_7->next = node_8;
+//	node_8->next = node_9;
+//	node_9->next = node_10;
+
+	
+
+	vector<ListNode *>  tt = splitListToParts(node_1, 5);
+	return;
+}
+
+// divided and conqueue
+vector<int> beautifulArray(int N) {
+	vector<int> ans;
+	//将N分解为[ 0  N/2 ] [N/2 +1,N-1]
+	// [0 N/2] 奇数
+	// [N/2+1,N-1] 偶数
+	// 奇数在前面 偶数在后面
+	if (N==1)
+	{
+		ans.push_back(1);
+		return ans;
+	}
+	else
+	{
+		vector<int> left = beautifulArray((N + 1) / 2);
+		for (int i = 0; i < left.size(); i++)
+			ans.push_back(2 * left[i] - 1);
+		vector<int> right = beautifulArray(N / 2);
+		for (int j = 0; j < right.size(); j++)
+			ans.push_back(2 * right[j]);
+	}
+	return ans;
+
+
+}
+
+void test_beautifulArray() {
+	int  N = 10;
+	vector<int> ans = beautifulArray(N);
+	return;
+}
+
+void rotate(vector<vector<int>>& matrix) {
+	int m = matrix.size();
+	int n = 2 * m;
+	vector<vector<int>>bigger(n, vector<int>(n, 0));
+	for (int j=n-1;j>=m;j--)
+	{
+		for (int i=m;i<n;i++)
+		{
+			cout << "    " << matrix[n - 1 - j][i - m];
+			bigger[i][j] = matrix[n-1-j][i-m];
+		}
+	}
+	for (int i=m;i<n;i++)
+	{
+		for (int j=m;j<n;j++)
+		{
+			matrix[i - m][j - m] = bigger[i][j];
+		}
+	}
+}
+
+void test_rotate()
+{
+	vector<vector<int>> img({ { 1,2,3,4 },{ 5,6,7,8 },{ 9,10,11,12 },{ 13,14,15,16 } });
+	rotate(img);
+	return;
+}
+
+
+string convertToBase7(int num) {
+	string ans;
+	if(num<0)
+	{
+		return '-' + convertToBase7(-num);
+	}
+	else if (num < 7) {
+		ans.push_back(num + '0');
+		return ans;
+	}
+	else
+	{
+		ans = convertToBase7(num / 7) + convertToBase7(num % 7);
+	}
+	return ans;
+}
+
+void test_convertToBase7()
+{
+	int i = -999;
+	string ss = convertToBase7(i);
+	cout << ss;
+	return;
+}
+
+
+
+vector<int> getRow_helper(int rowIndex) {
+	vector<int> ans;
+	if (rowIndex==0)
+	{
+		return{ 1 };
+	}
+	else if(rowIndex==1)
+	{
+		return{ 1,1 };
+	}
+	else
+	{
+		vector<int> last = getRow_helper(rowIndex- 1);
+		ans.push_back(1);
+		for (int i=1;i<rowIndex;i++)
+		{
+			ans.push_back(last[i - 1] + last[i]);
+		}
+		ans.push_back(1);
+	}
+	return ans;
+}
+
+void test_getRow()
+{
+	int n = 3;
+	vector<int>ass = getRow_helper(n+1);
+	return;
+}
+
+// 
+vector<int> plusOne(vector<int>& digits,int carry,int index) {
+	if (index==digits.size()-1)
+	{
+		if (digits[index]+carry<10)
+		{
+			digits[index] += carry;
+		}
+		else
+		{	
+			
+			digits[index] = 1;
+			
+		}
+	}
+}
+
+vector<int> plusOne(vector<int>& digits) {
+	
+}
+
+void test_plusOne()
+{
+	vector<int>	Nautilus({ 9,9,9,9 });
+	vector<int >ans =  plusOne(Nautilus);
+	return;
+}
+
+int main() {
+	{
+		//std::cout << "hello?";
+		//test_1();
+		//test_point();
+		//maxAreaOfIsland_test();
+		//test_recursion_pass(s,&y);
+		//test_backtraceing();
+		//test_BinaryGap();
+		//test_toLowerCase();
+		//test_numJewelsInStones();
+		//test_sortArrayByParity();
+		//test_uniqueMorseRepresentations();
+		//test_constructMaximumBinaryTree();
+		//test_flipAndInvertImage();
+		//test_pruneTree();
+		//test_peakIndexInMountainArray();
+		//test_allPossibleFBT();
+		//test_smallestRangeI();
+		//test_middleNode();
+		//test_spiralOrder();
+		//test_searchBST();
+		//test_postorder();
+		//test_maxDepth();
+		//test_preorder();
+		//test_numSpecialEquivGroups();	   ?
+		//test_uncommonFromSentences();    ?
+		//test_dailyTemperatures();
+		//test_singleNonDuplicate();
+		//test_shortestToChar(); ?
+		//test_hasAlternatingBits();
+		//test_countPrimeSetBits();
+		//test_averageOfLevels();
+		//test_constructFromPrePost(); ?
+		//test_isMonotonic();
+		//test_countSubstrings();
+		//test_largestTriangleArea();	 
+		//test_letterCasePermutation();	
+		//test_scoreOfParentheses();		 ?
+		//test_frequencySort();
+		//test_sort();
+		//local_test();
+		//test_countArrangement();
+		//test_generateParenthesis();
+		//test_combinationSum3();  ?
+		//test_combinationSum();  
+		//test_combinationSum2(); 
+		//test_stoneGame();
+		//test_maxAreaOfIsland();
+		//test_subtreeWithAllDeepest();
+		//test_minimumDeleteSum();
+		//test_minMoves2();
+		//test_minMoves();
+		//test_productExceptSelf();
+		//test_getSum();
+		//test_rotatedDigits();
+		//test_MagicDictionary();
+		//test_numComponents();	?
+		//test_findCircleNum(); ?
+		//test_build_config_vector();
+		//test_construct();
+		//test_combinationSum3();
+		//test_replaceWords();	??
+		//test_trie_tree();
+		//test_findAndReplacePattern();
+		//test_maxProfit1();
+		//test_maxProfit2();
+		//test_maxProfit3();	 ??
+		//test_levelOrder();
+		//test_findLUSlength();
+		//test_reverseOnlyLetters();
+		//test_rotateString();
+		//test_getMinimumDifference();
+		//test_nextGreaterElements();
+		//test_fourSumCount();
+		//test_shuffle_array();
+		//test_floodFill();
+
+		//test_BestTimetoBuyandSellStockwithTransactionFee_maxProfit(); //Time Limit Exceeded
+
+		//test_reorderedPowerOf2(); // Wrong Answer!
+
+		//test_maxCount();
+
+		//test_addTwoNumbers();		
+
+		//test_hammingDistance();
+		//test_totalHammingDistance();
+		//test_minDiffInBST(); ? 
+
+		//test_sortedArrayToBST();
+
+		//test_twoSum();
+		//test_findContentChildren();
+		//test_swimInWater();	 ?
+
+		//test_kthSmallest();
+	}
+
+	//test_sortArrayByParityII();
+	//test_splitListToParts();
+
+	//test_beautifulArray();
+	//test_rotate();
+
+	
+	//test_convertToBase7();
+	//test_getRow();
+	test_plusOne();
 
 
 
@@ -3608,6 +4690,7 @@ int main() {
 
 	return 0;
 }
+
 
 
 
