@@ -4556,21 +4556,635 @@ vector<int> plusOne(vector<int>& digits,int carry,int index) {
 		}
 		else
 		{	
-			
-			digits[index] = 1;
-			
+			auto it = digits.begin();
+			digits.insert(it, 1);
+			digits[index] = (digits[index] + carry) % 10;	
 		}
+		return digits;
+	}
+	else
+	{
+		
 	}
 }
 
 vector<int> plusOne(vector<int>& digits) {
-	
+	return{};
 }
 
 void test_plusOne()
 {
 	vector<int>	Nautilus({ 9,9,9,9 });
 	vector<int >ans =  plusOne(Nautilus);
+	return;
+}
+
+vector<int> findDiagonalOrder(vector<vector<int>>& matrix) {
+	vector<int> ans;
+	int m = matrix.size();
+	int n = matrix[0].size();
+	int times = m + n - 1;
+	bool up = false;
+	for (int i=0;i<times;i++)
+	{	
+		if(up)
+		{
+			int u = 0;
+			if (i >= n)
+			{
+				u = i - n + 1;
+			}
+			while (u <= i&&u<m)
+			{
+				int v = i - u;
+				ans.push_back(matrix[u][v]);
+				u++;
+			}
+			up = false;
+		}
+		else 
+		{
+
+			int v = 0;
+			if (i >= m)
+			{
+				v = i - m + 1;
+			}
+			while (v <= i&&v<n)
+			{
+				int u = i - v;
+				ans.push_back(matrix[u][v]);
+				v++;
+			}
+			up = true;
+		}
+		
+	}
+	return ans;
+}
+
+void test_findDiagonalOrder()
+{
+	vector<vector<int>>ma{
+		{ 1, 2, 3,41,42},
+		{ 4, 5, 6,61,62},
+		{ 7 ,8, 9,91,92},
+	};
+
+	vector<int> ss = findDiagonalOrder(ma);
+	return;
+}
+
+void findTargetSumWays_helper(vector<int>nums,int sum,int index,int &ans,vector<bool> &visited)
+{
+	
+	if (index==nums.size())
+	{
+		if (sum==0)
+		{
+			ans++;
+			
+		}
+		return;
+	}
+	
+//	if (!visited[index])
+	{
+//		visited[index] = true;
+		{
+			cout << "          " << nums[index] << endl;
+			
+			int index_x = index + 1;
+			findTargetSumWays_helper(nums, sum,index_x, ans, visited);
+			index_x = index_x - 1;
+
+
+
+			// int tttb = -nums[index];
+			// sum_ = sum - tttb;
+			// findTargetSumWays_helper(nums, sum_, index + 1, ans, visited);
+			// sum_ += tttb;
+		}
+		
+		
+	}
+}
+
+void _helper(vector<int>nums, int index,vector<int>&cur)   //todo ?? 
+{
+	if (index == nums.size())
+	{
+		for (int i = 0; i < cur.size(); i++)
+			cout << cur[i];
+		cout << endl;
+		return;
+	}
+	
+	for (int i=index+1;i<nums.size();i++)
+	{
+		cur.push_back(nums[i]);
+		_helper(nums, i,cur);
+		cur.pop_back();
+	}
+	
+}
+
+int findTargetSumWays(vector<int>& nums, int S) {
+	int ans = 0;
+	vector<bool> visited(nums.size(), false);
+	vector<int> cur;
+	findTargetSumWays_helper(nums, S, 0, ans, visited);
+	return ans;
+}
+
+void test_findTargetSumWays()
+{
+	vector<int>nums({ 1,2,3 });
+	int target = 3;
+	vector<int> cur;
+	//int ans = findTargetSumWays(nums, target);
+	_helper(nums, 0,cur);
+	return;
+}
+
+int bulbSwitch(int n) {		  //Time Exceeded!
+	vector<bool> ani(n+1,false);
+	for (int i=1;i<n+1;i++)  // 第i+1次操作 
+	{
+		int j = i;
+		while (j<n+1)
+		{
+			ani[j] = !ani[j];
+			j += i;
+		}
+		
+		
+		// for (int j=1;j<n+1;j++) // 第j+1个灯泡
+		// {
+		// 	if ((j)%(i)==0)
+		// 	{
+		// 		ani[j] = !ani[j];
+		// 	}
+		// }
+	}
+	int ret=0;
+	for (int i=1;i<n+1;i++)
+	{
+		cout << ani[i] << endl;
+		if (ani[i])
+		{
+			ret++;
+		}
+	}
+	return ret;
+}
+
+void  test_bulbSwitch()
+{
+	int kk = 10000000;
+	int ans = bulbSwitch(kk);
+	cout << "ans  " << ans;
+	return;
+}
+
+// 获取八个和的大小	i j 为锚点
+int getSum_8surrounding(vector<vector<int>>& M,int i,int j)
+{
+	 int cnt = 0;
+	 int sum = 0;
+	 for (int u=i-1;u<=i+1;u++)
+	 {
+		 for (int v=j-1;v<=j+1;v++)
+		 {
+			 if (M[u][v]==-1)
+			 {
+				 cnt++;
+			 }
+			 sum += M[u][v];
+		 }
+	 }
+	 return (sum+cnt) /( 9 - cnt);
+}
+
+vector<vector<int>> imageSmoother(vector<vector<int>>& M) {
+	int m = M.size();
+	if(m==0)
+	{
+		return{ {} };
+	}
+	int n = M[0].size();
+	vector<vector<int>> new_M(m+2,vector<int>(n+2,-1));
+	for (int i=0;i<m;i++)
+	{
+		for (int j=0;j<n;j++)
+		{
+			new_M[i+1][j+1] = M[i][j];
+		}
+	}
+
+	vector<vector<int>> ans(m,vector<int>(n,0));
+	for (int i=0;i<m;i++)
+	{
+		for (int j=0;j<n;j++)
+		{
+			ans[i][j] = getSum_8surrounding(new_M,i+1,j+1);
+		}
+	}
+
+	return ans;	
+}
+
+void test_imageSmoother()
+{
+	vector<vector<int>> mat({ { 2,3,4 },{ 5,6,7 },{ 8,9,10 },{ 11,12,13 },{ 14,15,16 } });
+	imageSmoother(mat);
+}
+
+int distance(pair<int,int>&a,pair<int,int>&b)
+{
+	int x = a.first - b.first;
+	int y = a.second - b.second;
+	return x*x + y*y;
+}
+
+//如果有三个点b,c,d都和a距离相等 
+int numberOfBoomerangs(vector<pair<int, int>>& points) {
+	int ans = 0;
+	unordered_map<int, int> mp;
+	int m = points.size();
+	for (int i=0;i<m;i++)
+	{
+		for (int j=0;j<m;j++)
+		{
+			if (i==j)
+			{
+					continue;
+			}
+			int dis = distance(points[i], points[j]);
+			mp[dis]++;
+		}
+		for (auto ss:mp)
+		{
+			ans += (ss.second - 1)*ss.second;
+		}
+		mp.clear();
+	}
+	return ans;
+}
+
+void test_numberOfBoomerangs()
+{
+	pair<int, int> s0 = make_pair(0, 0);
+	pair<int, int> s1 = make_pair(1, 0);
+	pair<int, int> s2 = make_pair(2, 0);
+
+	vector<pair<int, int>> sss({ s0,s1,s2 });
+	cout << "122   " << numberOfBoomerangs(sss);
+}
+
+
+int tree_sum(TreeNode *root)
+{
+	if (!root)
+	{
+		return 0;
+	}
+	if(!root->left&&!root->right)
+	{
+		return root->val;
+	}
+	int left = tree_sum(root->left);
+	int right = tree_sum(root->right);
+	return left + right + root->val;
+}
+
+int findTilt_help(TreeNode* root) 	  // 可以计算节点的差值
+{
+	if (!root)
+	{
+		return 0;
+	}
+	int left = tree_sum(root->left);
+	int right = tree_sum(root->right);
+	return abs(left - right);
+}
+
+int findTilt(TreeNode* root,int& ans)
+{
+	if (!root){
+		return 0;	
+	}
+	ans += findTilt_help(root);
+	int left = findTilt(root->left,ans);
+	int right = findTilt(root->right,ans);
+	return ans;
+}
+
+int findTilt(TreeNode* root)
+{
+	if (!root) {
+		return 0;
+	}
+	int ans = 0;
+	return findTilt(root,ans);
+}
+
+void test_findTilt()
+{
+	int ans = 0;
+	TreeNode *node1 = new TreeNode(1);
+	TreeNode *node2 = new TreeNode(2);
+	TreeNode *node3 = new TreeNode(3);
+	TreeNode *node4 = new TreeNode(4);
+	TreeNode *node5 = new TreeNode(5);
+
+
+	node1->left = node2;
+	node1->right = node3;
+
+	node2->right = node4;
+	node3->right = node5;
+	cout << "adfa   " << findTilt(node1);
+}
+
+int tree_depth(TreeNode *root)
+{
+	if (!root)
+	{
+		return 0;
+	}
+	int left = tree_depth(root->left);
+	int right = tree_depth(root->right);
+	return max(left, right) + 1;
+}
+
+// 可以获取了每一个节点的半径;
+int diameterOfBinaryTree_help2(TreeNode* root) 
+{
+	if (!root) {
+		return 0;
+	}
+	return tree_depth(root->left) + tree_depth(root->right);
+}
+	// 获取整个树半径的最大值
+int diameterOfBinaryTree_help1(TreeNode* root,int &ans)
+{
+	if(!root)
+	{
+		return 0;
+	}
+	int left_max = max(ans, diameterOfBinaryTree_help2(root->left));
+	int right_max = max(ans, diameterOfBinaryTree_help2(root->right));
+	return max(left_max, right_max);
+}
+
+int diameterOfBinaryTree(TreeNode *root)
+{
+	int ans = 0;
+	return diameterOfBinaryTree_help1(root, ans);
+}
+
+
+
+void test_diameterOfBinaryTree()
+{
+	int ans = 0;
+	TreeNode *node1 = new TreeNode(1);
+	TreeNode *node2 = new TreeNode(2);
+	TreeNode *node3 = new TreeNode(3);
+	TreeNode *node4 = new TreeNode(4);
+	TreeNode *node5 = new TreeNode(5);
+
+
+	node1->left = node2;
+	node1->right = node3;
+
+	node2->right = node4;
+	node2->right = node5;
+	cout << "adfa   " << diameterOfBinaryTree(node1);
+}
+
+class NestedInteger {
+	public:
+		    // Return true if this NestedInteger holds a single integer, rather than a nested list.
+		     bool isInteger() const;
+		
+		     // Return the single integer that this NestedInteger holds, if it holds a single integer
+		     // The result is undefined if this NestedInteger holds a nested list
+		     int getInteger() const;
+		
+		     // Return the nested list that this NestedInteger holds, if it holds a nested list
+		     // The result is undefined if this NestedInteger holds a single integer
+		     const vector<NestedInteger> &getList() const;
+		
+};
+
+
+// 使用stack来实现的	 先进后出
+class NestedIterator {
+public:
+	NestedIterator(vector<NestedInteger> &nestedList) {
+		for (int i=nestedList.size()-1;i>=0;i--)
+		{
+			stack.push(nestedList[i]);
+		}
+	}
+	// 如果是vector,访问里面的每一个元素,
+	int next() {
+		NestedInteger t = stack.top();
+		stack.pop();
+		return t.getInteger();
+	}
+
+	bool hasNext() {
+		while (!stack.empty())
+		{
+			NestedInteger ss = stack.top();
+			if (ss.isInteger())
+			{
+				return true;
+			}
+			stack.pop();
+			for (int i=ss.getList().size()-1;i>=0;i--)
+			{
+				stack.push(ss.getList()[i]);
+			}
+		}
+		return false;
+	}
+private:
+	stack<NestedInteger> stack;
+};
+
+
+
+vector<vector<int>> matrixReshape(vector<vector<int>>& nums, int r, int c) {
+	int m = nums.size();
+	int n = nums[0].size();
+	if ((m*n!=r*c)||(m==r&&n==c))
+	{
+		return nums;
+	}
+	vector<vector<int>> ans;
+	for (int u=0;u<r;u++)
+	{
+		vector<int> tmp;
+		for (int v=0;v<c;v++)
+		{
+			int all_index = u*c + v;
+			cout << "all_index11 " << all_index;
+			tmp.push_back(nums[all_index/n][all_index%n]);
+		}
+		ans.push_back(tmp);
+		  tmp.clear();
+	}
+	return ans;
+}
+
+
+void test_matrixReshape()
+{
+	vector<vector<int>> mat({ {1,2,3,4} });
+	vector<vector<int >>ans = matrixReshape(mat, 2, 2);
+	return;
+}
+
+string toHex_1(int n)
+{
+	string ans = "";
+	while (n)
+	{
+		ans.push_back(n % 16>=10?(n % 16 -10)+'a':'0'+n%16);
+		n >>= 4;
+	}
+	string ret;
+	for (string::reverse_iterator rit = ans.rbegin();rit!=ans.rend();++rit)
+	{
+		ret.push_back(*rit);
+	}
+	return ret;
+}
+
+
+string toHex(int num) {
+	string tmp = "";
+	unsigned int ttt = (unsigned int)num;
+	if(num==0)
+	{
+		return "0";
+	}
+	else if (ttt< 10) {
+		tmp += (ttt + '0');
+		return tmp;
+	}
+	else if (ttt <= 15) {
+		tmp += ('a' + ttt - 10);
+		return tmp;
+	}									 
+	else { 
+		return toHex(ttt / 16) + toHex(ttt %16);
+	}
+}
+
+void test_toHex()
+{
+	int i = -1;
+//	cout << toHex(i) << endl;
+	cout << toHex(i) << endl;
+
+	return;
+}
+int guess(int num)
+{
+	return 0;
+}
+
+int guessNumber(int n) {
+	int low = 1;
+	int high = n;
+	while (low<=high)
+	{
+		int mid = (low + high) / 2;
+		int ack = guess(mid);
+		if(mid==0)
+		{
+			return mid;
+		}
+		else if(mid>0)	 //mid 比 num大
+		{
+			low = mid + 1;
+		}
+		else
+		{
+			high = mid - 1;
+		}
+	}
+	return -1;
+}
+
+void test_guessNumber()
+{
+	int n = 10;
+	cout << "1111weeewew" << guessNumber(n);
+}
+
+
+bool isLongPressedName(string name, string typed) {
+	int j = 0;
+	for (int i=0;i<name.size();)
+	{
+		char name_c = name[i];
+		int name_cnt =0;
+		while (name[i]==name_c&&i<name.size())
+		{
+			name_cnt++;
+			i++;
+		}
+		for (;j<typed.size();)
+		{
+			char typed_c = typed[j];
+			int typed_cnt =0;
+			while (typed[j] == typed_c&&j<typed.size()&&typed[j]==name_c)
+			{
+				typed_cnt++;
+				j++;
+			}
+			if(name_cnt>typed_cnt)
+				return false;
+			break;
+		}
+		 if(j==typed.size()&&i<name.size())
+			 return false;
+		
+	}
+	return true;
+}
+
+void test_isLongPressedName()
+{
+	string name("pyplrz");
+	string typed("ppyypllr");
+	cout << "asdfasdf  " << isLongPressedName(name, typed);
+}
+
+int removeElement(vector<int>& nums, int val) {
+	for (int i=0;i<nums.size();i++)
+	{
+		if (nums.at(i)==val)
+		{
+			nums.erase(nums.begin()+i);
+			i--;
+		}
+	}
+	return nums.size();
+}
+
+void test_removeElement()
+{
+	vector<int> nums({ 3,2,2,3 });
+	int target = 2;
+	removeElement(nums, target);
+
 	return;
 }
 
@@ -4651,43 +5265,40 @@ int main() {
 		//test_fourSumCount();
 		//test_shuffle_array();
 		//test_floodFill();
-
 		//test_BestTimetoBuyandSellStockwithTransactionFee_maxProfit(); //Time Limit Exceeded
-
 		//test_reorderedPowerOf2(); // Wrong Answer!
-
 		//test_maxCount();
-
 		//test_addTwoNumbers();		
-
 		//test_hammingDistance();
 		//test_totalHammingDistance();
 		//test_minDiffInBST(); ? 
-
 		//test_sortedArrayToBST();
-
 		//test_twoSum();
 		//test_findContentChildren();
 		//test_swimInWater();	 ?
-
-		//test_kthSmallest();
-	}
-
-	//test_sortArrayByParityII();
-	//test_splitListToParts();
-
-	//test_beautifulArray();
-	//test_rotate();
-
+		//test_kthSmallest(); 
+		//test_sortArrayByParityII();
+		//test_splitListToParts();
+		//test_beautifulArray();
+		//test_rotate();
+		//test_convertToBase7();
+		//test_getRow();
+		//test_plusOne();  ? 
+		//test_findDiagonalOrder();
+		//test_findTargetSumWays();	  //?
+		//test_bulbSwitch();
+		//test_imageSmoother();
+		//test_numberOfBoomerangs();	
+		//test_findTilt();
+		//test_diameterOfBinaryTree();?
+		//test_matrixReshape();
+		//test_toHex();
+		//test_guessNumber();
+	}								
 	
-	//test_convertToBase7();
-	//test_getRow();
-	test_plusOne();
 
-
-
-
-
+	//test_isLongPressedName();
+	test_removeElement();
 	return 0;
 }
 
