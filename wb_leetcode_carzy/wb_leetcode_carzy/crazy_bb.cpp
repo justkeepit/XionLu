@@ -4,6 +4,8 @@
 
 #include "head.h"
 
+#if 0
+#endif
 int cal_min_cost(vector<int> & coins, int *parr, int total) {
 	int min_index = -1;  //ÓÃÓÚË÷Òıcoins
 	int min = 0xffff;
@@ -4550,31 +4552,36 @@ void test_getRow()
 vector<int> plusOne(vector<int>& digits,int carry,int index) {
 	if (index==digits.size()-1)
 	{
-		if (digits[index]+carry<10)
+		if(digits[index]+carry>=10)
 		{
-			digits[index] += carry;
+			digits.push_back(1);		
 		}
-		else
-		{	
-			auto it = digits.begin();
-			digits.insert(it, 1);
-			digits[index] = (digits[index] + carry) % 10;	
-		}
+		digits[index] = (digits[index] + carry) % 10;
 		return digits;
 	}
-	else
+	if (digits[index]+carry<10)
 	{
-		
+		digits[index] += 1;
+		return digits;
 	}
+	
+	{
+		digits[index] = (digits[index] + carry) % 10;
+		return plusOne(digits, 1, index + 1);
+	}
+	
 }
 
 vector<int> plusOne(vector<int>& digits) {
-	return{};
+	reverse(digits.begin(), digits.end());
+	vector<int> ans_reveresed =  plusOne(digits, 1, 0);
+	reverse(ans_reveresed.begin(),ans_reveresed.end());
+	return ans_reveresed;
 }
 
 void test_plusOne()
 {
-	vector<int>	Nautilus({ 9,9,9,9 });
+	vector<int>	Nautilus({ 9,9,9,9,9 });
 	vector<int >ans =  plusOne(Nautilus);
 	return;
 }
@@ -5188,6 +5195,8 @@ void test_removeElement()
 	return;
 }
 
+
+
 int main() {
 	{
 		//std::cout << "hello?";
@@ -5283,7 +5292,7 @@ int main() {
 		//test_rotate();
 		//test_convertToBase7();
 		//test_getRow();
-		//test_plusOne();  ? 
+		test_plusOne();  
 		//test_findDiagonalOrder();
 		//test_findTargetSumWays();	  //?
 		//test_bulbSwitch();
@@ -5298,9 +5307,12 @@ int main() {
 	
 
 	//test_isLongPressedName();
-	test_removeElement();
+	//test_removeElement();
+
 	return 0;
 }
+
+
 
 
 
