@@ -5,7 +5,7 @@
 #include "head.h"
 
 #if 0
-#endif
+
 int cal_min_cost(vector<int> & coins, int *parr, int total) {
 	int min_index = -1;  //ÓÃÓÚË÷Òıcoins
 	int min = 0xffff;
@@ -5311,6 +5311,7 @@ int main() {
 
 	return 0;
 }
+#endif
 
 
 
