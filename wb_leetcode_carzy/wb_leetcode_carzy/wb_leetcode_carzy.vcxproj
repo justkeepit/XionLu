@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="crazy_bb.cpp" />
     <ClCompile Include="local_test.cpp" />
+    <ClCompile Include="woolgatherer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="head.h" />

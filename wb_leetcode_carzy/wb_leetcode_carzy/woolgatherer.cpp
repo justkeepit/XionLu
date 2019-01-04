@@ -1494,7 +1494,7 @@ void binaryTreePaths_helper_AC(TreeNode *root, string ans, vector<string>&ack)
 vector<string> binaryTreePaths(TreeNode* root) {
 	vector<string> ans;
 	string ack;
-	binaryTreePaths_helper(root,ack, ans);
+	binaryTreePaths_helper_AC(root,ack, ans);
 	return ans;
 }
 
@@ -1514,24 +1514,1940 @@ void test_binaryTreePaths()
 	cout << "Binary Tree Paths" << ack[0];
 }
 
+bool flipEquiv(TreeNode* root1, TreeNode* root2) 
+{
+	if (!root1&&!root2)
+	{
+		return true;
+	}
+	if (!root1&&root2||!root2&&root1)
+	{
+		return false;
+	}
+	bool left_left = flipEquiv(root1->left, root2->left);
+	bool left_right = flipEquiv(root1->left, root2->right);
+	bool right_right = flipEquiv(root1->right, root2->right);
+	bool right_left = flipEquiv(root1->right, root2->left);
+
+	return root1->val == root2->val && (left_left || left_right) && (right_right || right_left);
+}
+
+void test_flipEquiv()
+{
+	auto node_1 = new TreeNode(1);
+	auto node_2 = new TreeNode(2);
+	auto node_3 = new TreeNode(3);
+	auto node_4 = new TreeNode(4);
+	auto node_5 = new TreeNode(5);
+	auto node_6 = new TreeNode(6); 
+	auto node_7 = new TreeNode(7);
+	auto node_8 = new TreeNode(8);
+
+	node_1->left = node_2;
+	node_1->right = node_3;
+
+	node_2->left = node_4;
+	node_2->right = node_5;
+
+	node_3->left = node_6;
+
+	node_5->left = node_7;
+	node_5->right = node_8;
+
+	auto _1_node_1 = new TreeNode(1);
+	auto _1_node_2 = new TreeNode(2);
+	auto _1_node_3 = new TreeNode(3);
+	auto _1_node_4 = new TreeNode(4);
+	auto _1_node_5 = new TreeNode(5);
+	auto _1_node_6 = new TreeNode(6);
+	auto _1_node_7 = new TreeNode(7);
+	auto _1_node_8 = new TreeNode(8);
+
+	_1_node_1->left = _1_node_3;
+	_1_node_1->right = _1_node_2;
+
+	_1_node_2->left = _1_node_4;
+	_1_node_2->right = _1_node_5;
+
+	_1_node_3->right = _1_node_6;
+
+	_1_node_5->left = _1_node_8;
+	_1_node_5->right = _1_node_7;
+
+	bool ack = flipEquiv(node_1, _1_node_1);
+
+	cout << " Flip Equivalent Binary Trees" << ack;
+}
+
+vector<int> deckRevealedIncreasing(vector<int>& deck) {
+	queue<int> ss;
+	vector<int> ack;
+	for (auto i:deck)
+		ss.push(i);
+	while (!ss.empty())
+	{
+		int tmp = ss.front();
+		ack.push_back(tmp);
+		ss.pop();
+		if (!ss.empty())
+		{
+			int change_num = ss.front();
+			ss.pop();
+			ss.push(change_num);
+		}
+	}
+	return ack;
+
+
+
+
+}
+
+void test_deckRevealedIncreasing()
+{
+	vector<int> entry({ 2,13,3,11,5,17,7 });
+	vector<int>ack = deckRevealedIncreasing(entry);
+	cout << "Reveal Cards In Increasing Order" << ack[0];
+}
+
+int get_sum_binary_vector(vector<int> &vec)
+{
+	 auto nums = vec.size();
+	 auto ack = 0;
+	 for (int i = nums-1; i >=0 ; i--)
+	 	ack += vec[i] * pow(2 , (nums - 1 - i));
+	return ack;
+}	
+
+int get_sum_matrix(vector<vector<int>> &A)
+{
+	int ack = 0;
+	for (auto j = 0; j < A.size(); j++)
+		ack += get_sum_binary_vector(A[j]);
+	return ack;
+}
+
+void trans_matrix_col(vector<vector<int>>& A,int col)
+{
+	for (auto i=0;i<A.size();i++)
+	{
+		A[i][col] = !(A[i][col] == 1);
+	}
+}
+
+void trans_matrix_row(vector<vector<int>>& A,int row)
+{
+	for (auto j=0;j<A[row].size();j++)
+	{
+		A[row][j] = !(A[row][j] == 1);
+	}
+}
+
+int matrixScore(vector<vector<int>>& A) 
+{
+	
+	auto max = -1;
+	while(get_sum_matrix(A)>max)
+	{
+		max = get_sum_matrix(A);
+		for (auto i=0;i<A.size();i++)
+		{
+			trans_matrix_row(A, i);
+			if(get_sum_matrix(A)>max)
+			{
+				max = get_sum_matrix(A);
+			}
+			else
+			{
+				trans_matrix_row(A, i);
+			}
+		}
+
+		for (auto i = 0; i<A[0].size(); i++)
+		{
+			trans_matrix_col(A, i);
+			if (get_sum_matrix(A)>max)
+			{
+				max = get_sum_matrix(A);
+			}
+			else
+			{
+				trans_matrix_col(A, i);
+			}
+		}
+	}
+	return max;
+}
+
+void test_matrixScore()
+{
+	vector<vector<int>> A({ {1,1},{1,1},{0,1} });
+	auto ack = matrixScore(A);
+	cout << "Score After Flipping Matrix " << ack;
+}
+
+
+
+void test_vector_remove(vector<int > &nums)
+{
+	for (size_t i = 0; i < nums.size(); i++)
+	{
+		nums.erase(nums.begin() + i);
+		i--;
+	}
+}
+
+int removeDuplicates(vector<int>& nums) {
+	for (auto i=0;i<nums.size();i++)
+	{
+		auto cur = nums[i];
+		while ((i+1<nums.size())&&nums[i+1]==cur)
+		{
+			nums.erase(nums.begin() + i);
+			//i--;
+		}
+		
+	}
+	// return nums.size();
+	//test_vector_remove(nums);
+	return nums.size();
+}
+
+
+void test_removeDuplicates()
+{
+	vector<int> ack = { 0,0,1,1,1,2,2,3,3,4,4};
+	auto ans = removeDuplicates(ack);
+	cout << "Remove Duplicates from Sorted Array" << ans;
+}
+
+Node* intersect(Node* quadTree1, Node* quadTree2) 
+{
+	if (!quadTree1&&!quadTree2)
+	{
+		return nullptr;
+	}
+
+	if (quadTree1->isLeaf&&quadTree2->isLeaf)
+	{
+		return new Node(quadTree1->val||quadTree2->val,true,0,0,0,0);
+	}
+
+	auto top_left = new Node(true, true, 0, 0, 0, 0);
+	if (quadTree1->isLeaf &&quadTree2->isLeaf)
+		 top_left = intersect(quadTree1, quadTree2);
+	else if (!quadTree1->isLeaf&&quadTree2->isLeaf)
+		 top_left = intersect(quadTree1->topLeft, quadTree2);
+	else if(quadTree1->isLeaf&&!quadTree2->isLeaf)
+		 top_left = intersect(quadTree1, quadTree2->topLeft);
+	else
+		 top_left = intersect(quadTree1->topLeft, quadTree2->topLeft);
+
+
+	auto top_right = new Node(true, true, 0, 0, 0, 0);
+	if (quadTree1->isLeaf &&quadTree2->isLeaf)
+		top_right = intersect(quadTree1, quadTree2);
+	else if (!quadTree1->isLeaf&&quadTree2->isLeaf)
+		top_right = intersect(quadTree1->topRight, quadTree2);
+	else if (quadTree1->isLeaf && !quadTree2->isLeaf)
+		top_right = intersect(quadTree1, quadTree2->topRight);
+	else
+		top_right = intersect(quadTree1->topRight, quadTree2->topRight);
+
+
+
+	auto bottom_left = new Node(true, true, 0, 0, 0, 0);
+	if (quadTree1->isLeaf &&quadTree2->isLeaf)
+		bottom_left = intersect(quadTree1, quadTree2);
+	else if (!quadTree1->isLeaf&&quadTree2->isLeaf)
+		bottom_left = intersect(quadTree1->bottomLeft, quadTree2);
+	else if (quadTree1->isLeaf && !quadTree2->isLeaf)
+		bottom_left = intersect(quadTree1, quadTree2->bottomLeft);
+	else
+		bottom_left = intersect(quadTree1->bottomLeft, quadTree2->bottomLeft);
+
+
+	auto bottom_right = new Node(true, true, 0, 0, 0, 0);
+	if (quadTree1->isLeaf &&quadTree2->isLeaf)
+		bottom_right = intersect(quadTree1, quadTree2);
+	else if (!quadTree1->isLeaf&&quadTree2->isLeaf)
+		bottom_right = intersect(quadTree1->bottomRight, quadTree2);
+	else if (quadTree1->isLeaf && !quadTree2->isLeaf)
+		bottom_right = intersect(quadTree1, quadTree2->bottomRight);
+	else
+		bottom_right = intersect(quadTree1->bottomRight, quadTree2->bottomRight);
+
+
+	if (top_left->val==top_right->val
+		&&top_right->val == bottom_left->val
+		&&bottom_left->val==bottom_right->val) // 合并的条件是得到的结果一样的
+	{
+		auto tmp = top_left;
+		delete top_left;
+		delete top_right;
+		delete bottom_left;
+		delete bottom_right;
+		return new Node(tmp->val, true, 0, 0, 0, 0);
+	}
+	return new Node(false, false, top_left, top_right, bottom_left, bottom_right);
+
+}
+
+void test_intersect_Quad_Node()
+{
+
+
+	auto node_1_top_left = new Node(true, true, NULL, NULL, NULL, NULL);
+	auto node_1_top_right = new Node(true, true, NULL, NULL, NULL, NULL);
+	auto node_1_bottom_left = new Node(false, true, NULL, NULL, NULL, NULL);
+	auto node_1_bottom_right = new Node(false, true, NULL, NULL, NULL, NULL);
+
+	auto _1node = new Node(false, false, node_1_top_left, node_1_top_right, node_1_bottom_left, node_1_bottom_right);
+
+
+
+	auto _node_1_top_left = new Node(false, true, NULL, NULL, NULL, NULL);
+	auto _node_1_top_right = new Node(false, true, NULL, NULL, NULL, NULL);
+	auto _node_1_bottom_left = new Node(true, true, NULL, NULL, NULL, NULL);
+	auto _node_1_bottom_right = new Node(true, true, NULL, NULL, NULL, NULL);
+
+	auto _node_2_1 = new Node(true, true, 0, 0, 0, 0);
+	auto _node_2_2 = new Node(false, false, _node_1_top_left, _node_1_top_right, _node_1_bottom_left, _node_1_bottom_right);
+	auto _node_2_3 = new Node(true, true, 0, 0, 0, 0);
+	auto _node_2_4 = new Node(true, true, 0, 0, 0, 0);
+
+	auto node_2 = new Node(false, false, _node_2_1, _node_2_2, _node_2_3, _node_2_4);
+
+	auto ack = intersect(node_1_top_left, _node_2_2);
+
+	cout << "Quad Tree Intersection" << 11;
+}
+
+
+
+bool isMountainArray(vector<int>& A,int index)
+{
+	auto ascending = true;
+	for (auto i =0;i<index;i++)
+	{
+		if (A[i]>=A[i+1])
+		{
+			ascending = false;
+		}
+	}
+
+	auto descending = true;
+	for (auto i = index; i<A.size()-1; i++)
+	{
+		if (A[i] <= A[i + 1])
+		{
+			descending = false;
+		}
+	}
+
+	return ascending&&descending;
+
+}
+
+bool validMountainArray(vector<int>& A) {
+	if (A.size() < 3)
+		return false;
+	for (auto i=1;i<A.size()-1;i++)
+	{
+		if (isMountainArray(A,i))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void test_validMountainArray()
+{
+	vector<int> ack({ 3,5,5,5 });
+	cout << "Valid Mountain Array" << validMountainArray(ack);
+}
+
+
+bool func(pair<char,int>&a,pair<char,int>&b)
+{
+	return a.second > b.second;
+}
+
+
+string frequencySort(string s) 
+{
+	unordered_map<char, int> map;
+	for (auto ch : s)
+	{
+		if (map.find(ch)!=map.end()) // 存在ch
+		{
+			map[ch] = map[ch]++;
+			
+		}
+		else
+		{
+			map[ch]++;
+		}
+		
+	}
+	vector<pair<char, int>> vec;
+	auto it = map.begin();
+	while (it != map.end())
+	{
+		vec.push_back(make_pair(it->first,it->second));
+		++it;
+	}
+
+	sort(vec.begin(), vec.end(), func);
+	string ret;
+	auto it_vec = vec.begin();
+	while (it_vec !=vec.end())
+	{
+		for (auto i=0;i<it_vec->second;i++)
+			ret.push_back(it_vec->first);
+		++it_vec;
+	}
+	return ret;
+}
+
+
+
+void test_frequencySort()
+{
+	string ack("cccaaa");
+	string ans = frequencySort(ack);
+	cout << "Sort Characters By Frequency  " << ans;
+}
+
+
+
+
+
+bool func_int(pair<int, int>&a, pair<int, int>&b)
+{
+	return a.second > b.second;
+}
+
+vector<int> topKFrequent(vector<int>& nums, int k) {
+	unordered_map<int, int> map;
+	for (auto ch : nums)
+	{
+		map[ch]++;
+	}
+	vector<pair<int, int>> vec;
+	auto it = map.begin();
+	while (it != map.end())
+	{
+		vec.push_back(make_pair(it->first, it->second));
+		++it;
+	}
+
+	sort(vec.begin(), vec.end(), func_int);
+	vector<int> ret;
+	auto vec_it = vec.begin();
+
+	auto cnt = 0;
+	while(vec_it!=vec.end())
+	{
+		if(cnt<k)
+		{
+			ret.push_back(vec_it->first);
+			cnt++;
+		}
+		++vec_it;
+	}
+	
+	return ret;
+}
+
+void test_topKFrequent()
+{
+	vector<int> nums({ 1,1,1,2,2,3 });
+	auto ans = topKFrequent(nums, 2);
+	cout << " Top K Frequent Elements" << ans[0];
+}
+
+int get_tree_height(TreeNode *node)
+{
+	if (!node)
+	{
+		return 0;
+	}
+	int left = get_tree_height(node->left);
+	int right = get_tree_height(node->right);
+	return max(left, right) + 1;
+}
+
+
+void print_tree_helper(TreeNode *root,int cur_H, int start,int end,int height,vector<vector<string>>&ack)
+{
+	if (!root)
+	{
+		return;
+	}
+	if(cur_H==height)
+	{
+		return;
+	}
+	ack[cur_H][(start + end) / 2] = to_string(root->val);
+	print_tree_helper(root->left, cur_H + 1, start, (start + end) / 2, height, ack);
+	print_tree_helper(root->right, cur_H + 1, (start + end) / 2 + 1, end, height, ack);
+}
+
+vector<vector<string>> printTree(TreeNode* root) 
+{
+	int h = get_tree_height(root);
+	int w = pow(2, h) - 1;
+	vector<vector<string>> ack(h, vector<string>(w, ""));
+	print_tree_helper(root, 0, 0, w - 1, h, ack);
+	return ack;
+}
+
+
+void test_printTree()
+{
+	auto node_1 = new TreeNode(1);
+	auto node_2 = new TreeNode(2);
+	auto node_3 = new TreeNode(3);
+	auto node_4 = new TreeNode(4);
+	auto node_5 = new TreeNode(5);
+
+	node_1->left = node_2;
+	node_2->left = node_3;
+	node_3->left = node_4;
+
+	node_1->right = node_5;
+
+	auto ack = printTree(node_1);
+
+	return;
+}
+
+
+int bigger_than_special_index_num(vector<int>&row_nums,int index,int target)
+{
+	auto cnt = 0;
+	for (auto i=0;i<index;i++)
+	{
+		if (row_nums[i]>target)
+		{
+			cnt++;
+		}
+	}
+	return cnt;
+}
+
+
+
+
+vector<int> get_vec_before_index_row(vector<vector<int>>&M,int row_index)
+{
+	vector<int> ack;
+	for (auto j=0;j<row_index;j++)
+	{
+		ack.push_back(M[row_index + 1][j]);
+	}
+	return ack;
+}
+
+
+vector<int> get_vec_before_index_col(vector<vector<int>>&M, int col_index)
+{
+	vector<int> ack;
+	for (auto i=0;i<col_index;i++)
+	{
+		ack.push_back(M[i][col_index + 1]);
+	}
+	return ack;
+}
+
+int kthSmallest(vector<vector<int>>& matrix, int k) 
+{
+	vector<int> dialog; // 存在对角线的数字的rank;是逆序的
+	auto n = matrix.size();
+	for (auto i=0;i<n-1;i++)
+	{
+		if (i==0)
+		{
+			dialog.push_back(1);
+		}
+		else
+		{
+			vector<int> row = get_vec_before_index_row(matrix,i);
+			vector<int> col = get_vec_before_index_col(matrix, i);
+			auto cnt = bigger_than_special_index_num(row, i - 1, matrix[i][i]) + bigger_than_special_index_num(col,i-1,matrix[i][i]);
+
+		}
+	}
+	return dialog[0];
+}
+
+
+void test_kthSmallest()
+{
+	vector<vector<int>> ack = {
+		{1, 5, 9},
+		{10,11,13},
+		{12,13,15},
+	};
+	int k = 8;
+	auto ans = kthSmallest(ack, k);
+	cout << "Kth Smallest Element in a Sorted Matrix " << ans;
+}
+
+ListNode *detectCycle(ListNode *head) {
+	auto pfast = head;
+	auto pslow = head;
+
+	while (pfast&&pfast->next) //此时都在Z的位置
+	{
+		pfast = pfast->next;
+		pfast = pfast->next;
+		pslow = pslow->next;
+		if(pslow==pfast)
+			break;
+	}
+
+	if (!pfast || !pfast->next)
+		return nullptr;
+	pslow = head;
+	while (pslow!=pfast)
+	{
+		pslow = pslow->next;
+		pfast = pfast->next;	
+	}
+
+	return pslow;
+}
+
+
+void test_detectCycle()
+{
+	auto node_3 = new ListNode(3);
+	auto node_2 = new ListNode(2);
+	auto node_0 = new ListNode(0);
+	auto node_4 = new ListNode(4);
+
+
+	node_3->next = node_2;
+	node_2->next = node_3;
+	// node_0->next = node_4;
+	// node_4->next = node_2;
+
+	auto ack = detectCycle(node_3);
+
+	cout << "  Linked List Cycle II " << ack->val;
+	return;
+
+}
+
+int findDuplicate(vector<int>& nums) {
+	auto fast = nums[0];
+	auto slow = nums[0];
+	while (true)
+	{
+		fast = nums[fast];
+		slow = nums[nums[slow]];
+		if (fast==slow)
+		{
+			break;
+		}
+	}
+	fast = nums[0];
+	while (fast!=slow)
+	{
+		fast = nums[fast];
+		slow = nums[slow];
+
+	}
+
+	return fast;
+}
+
+void test_findDuplicate()
+{
+	vector<int> ack = { 1,3,4,2,2};
+	auto res = findDuplicate(ack);
+	cout << "Find the Duplicate Number " << res;
+}
+
+
+TreeNode* addOneRow(TreeNode* root, int value, int depth) {
+	if (depth==1)
+	{
+		auto ans = new TreeNode(value);
+		ans->left = root;
+		return ans;
+	}
+	if(depth==2)
+	{
+		auto lf = new TreeNode(value);
+		lf->left = root->left;
+		//lf->right = nullptr;
+		root->left = lf;
+
+		auto lg = new TreeNode(value);
+		lg->right = root->right;
+		//lg->left = nullptr;
+		root->right = lg;
+		return root;
+	}
+	if(root->left)
+		root->left = addOneRow(root->left, value, depth - 1);
+	if(root->right)
+		root->right = addOneRow(root->right, value, depth-1);
+	return root;
+}
+
+
+void test_addOneRow()
+{
+	auto node_4 = new TreeNode(4);
+	auto node_2 = new TreeNode(2);
+	auto node_6 = new TreeNode(6);
+	
+
+	auto node_3 = new TreeNode(3);
+	auto node_1 = new TreeNode(1);
+	auto node_5 = new TreeNode(5);
+
+
+	node_4->left = node_2;
+	node_4->right = node_6;
+	node_2->left = node_3;
+	node_2->right = node_1;
+	node_6->left = node_5;
+
+	auto ack = addOneRow(node_4, 1, 2);
+	cout << "Add One Row to Tree " << ack->val;
+
+}
+
+void get_tree_node_left_node(TreeNode *root,vector<int> &ret)
+{
+	if (!root)
+	{
+		return;
+	}
+	get_tree_node_left_node(root->left, ret);
+	if (!root->left && !root->right)
+		ret.push_back(root->val);
+	get_tree_node_left_node(root->right, ret);
+}
+
+bool leafSimilar(TreeNode* root1, TreeNode* root2) {
+	vector<int>ack1;
+	vector<int>ack2;
+
+	get_tree_node_left_node(root1, ack1);
+	get_tree_node_left_node(root2, ack2);
+	return ack1 == ack2;
+}
+
+void test_leafSimilar()
+{
+	auto node_3 = new TreeNode(3);
+	auto node_5 = new TreeNode(5);
+	auto node_1 = new TreeNode(1);
+	auto node_6 = new TreeNode(6);
+	auto node_2 = new TreeNode(2);
+	auto node_9 = new TreeNode(9);
+	auto node_8 = new TreeNode(8);
+	auto node_7 = new TreeNode(7);
+	auto node_4 = new TreeNode(4);
+
+	node_3->left = node_5;
+	node_3->right = node_1;
+
+
+	node_5->left = node_6;
+	node_5->right = node_2;
+
+	node_1->left = node_9;
+	node_1->right = node_8;
+
+	node_2->left = node_7;
+	node_2->right = node_4;
+
+	vector<int> ack;
+	get_tree_node_left_node(node_3, ack);
+	return;
+}
+
+
+//dir first 控制i,j   second 控制 方向
+//first =  1  i 
+//first = -1  j
+// second =  1  +
+// second = -1  -
+pair<int,int> status_change(pair<int,int>& cur,pair<int,int>& anchor,int force,pair<int,int>&dir) 
+{
+	pair<int, int> ret;
+	if (abs(cur.first-anchor.first)==force&&abs(cur.second-anchor.second)!=force) //只有继续变化second
+	{
+		ret.first = cur.first;
+		ret.second += dir.second;
+		return ret;
+	}
+	
+	if (abs(cur.first - anchor.first) != force&&abs(cur.second - anchor.second) == force) //只有继续变化first
+	{
+		ret.first += dir.second;
+		ret.second = cur.second;
+		return ret;
+	}
+
+	if (abs(cur.first - anchor.first) == force&&abs(cur.second - anchor.second) == force)  // 现在i,j 都达到了极限
+	{
+		if(dir.first==1)
+		{
+			if(dir.second>0) // 控制 i 达到正向最大了
+			{
+				ret.first = cur.first;
+				ret.second = cur.second - dir.second;
+
+				dir.first = -1;
+				dir.second = -dir.second;
+
+			}
+			else if(dir.second<0) //  控制 i 达到反向最大了 
+			{
+				ret.first = cur.first;
+				ret.second = cur.second - dir.second;
+
+				dir.first = -1;
+				dir.second = -dir.second;
+			}
+		}
+		else if(dir.first==-1)
+		{
+			if (dir.second>0) // 控制 j 达到正向最大了
+			{
+				ret.first = cur.first - dir.second;
+				ret.second = cur.second;
+
+				dir.first = 1;
+				dir.second = -dir.second;
+
+			}
+			else if (dir.second<0) //  控制 j 达到反向最大了 
+			{
+				ret.first = cur.first - dir.second;
+				ret.second = cur.second;
+
+				dir.first = -1;
+				dir.second = -dir.second;
+			}
+		}
+	}
+
+	return ret;
+
+
+}
+
+
+vector<vector<int>> spiralMatrixIII(int R, int C, int r0, int c0) 
+{
+	//pair<int, int> status_change(pair<int, int>& cur, pair<int, int>& anchor, int force, pair<int, int>&dir)
+
+	auto ss =  status_change(make_pair(r0+1, c0+1), make_pair(r0, c0), 1, make_pair(1, 1));
+
+	return{ {} };
+}
+
+void test_spiralMatrixIII()
+{
+	auto R = 5;
+	auto C = 6;
+	auto r0 = 1;
+	auto c0 = 4;
+	
+	spiralMatrixIII(R, C, r0, c0);
+
+
+}
+
+
+int numTrees(int n) {
+	vector<int> ack(n+1, 0);
+	ack[0] = 1;
+	ack[1] = 1;
+	for (auto i=2;i<=n;i++)
+	{
+		for (auto j=0;j<i;j++)
+		{
+			ack[i] += ack[j] * ack[i-1-j];
+		}
+	}
+
+	return ack[n];
+
+}
+
+void test_numTrees()
+{
+	auto n = 3;
+	cout << "Unique Binary Search Trees" << numTrees(n);
+}
+
+bool vec_func(pair<int,int>&a,pair<int,int>&b)
+{
+	return a.first < b.first;
+}
+
+bool isNStraightHand(vector<int>& hand, int W) 
+{
+	if (hand.size()%W)
+	{
+		return false;
+	}
+	unordered_map<int, int>gpu;
+	for (auto i=0;i<hand.size();i++)
+	{
+		gpu[hand[i]]++;
+	}
+	vector<pair<int, int>> vec;
+	auto m_it = gpu.begin();
+	while (m_it!=gpu.end())
+	{
+		vec.push_back(*m_it);
+		++m_it;
+	}
+	sort(vec.begin(), vec.end(), vec_func);
+
+
+
+	for (auto k =0;k<vec.size();)
+	{
+		if(vec[k].second>0)
+			vec[k].second -= 1;
+		else if (vec[k].second == 0) {
+			k++;
+			continue;
+		}
+		auto index = vec[k].first;
+		for (auto i=1;i<W;i++)
+		{
+			if(k+i>=vec.size())
+			{
+				return false;
+			}
+			if (vec[k+i].first!=index+i)
+			{
+				return false;
+			}
+			
+			if(vec[k+i].first==index+i)
+			{
+				vec[k + i].second -= 1;
+			}
+		}
+		
+	}
+	for (auto s= 0;s<vec.size();s++)
+	{
+		if (vec[s].second)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void test_isNStraightHand()
+{
+	vector<int> cpu = { 1,1,2,2,3,3 };
+	int w = 2;
+	auto ack = isNStraightHand(cpu, w);
+	cout << "Hand of Straights " << ack;
+}
+
+int get_greatest_factor_2_nums(int a,int b)
+{
+	if (a < 0)
+		a = -a;
+	if (b < 0)
+		b = -b;
+	if (b==0)
+	{
+		return a;
+	}
+	return get_greatest_factor_2_nums(b, a%b);
+}
+
+
+
+
+/*int get_final_all_2_one(vector<int>factor)
+{
+	if (factor.size()==1)
+	{
+		return factor[0];
+	}
+	vector<int> left_vec(factor.begin(), factor.begin() + factor.size() / 2);
+	vector<int> right_vec(factor.begin() + factor.size() / 2, factor.end());
+
+	auto left = get_final_all_2_one(left_vec);
+	auto right = get_final_all_2_one(right_vec);
+
+	cout << "renttieijasdfsf" << left << right << endl;
+	return get_greatest_factor_2_nums(left, right);
+}
+
+int get_least_common_multiple(vector<int> &multiple)
+{
+	return get_final_all_2_one(multiple);
+}*/
+
+//分母
+vector<int> get_denominator_(string expression)
+{
+	vector<int> denominator_vec;
+	for (auto i = 0; i<expression.size(); i++)
+	{
+		if (expression[i] == '/')
+		{
+			i++;
+			string tmp;
+			auto j = 0;
+			while (expression[i + j] != '+'&&expression[i + j] != '-'&&i + j<expression.size())
+			{
+				tmp.push_back(expression[i + j]);
+				j++;
+			}
+			auto num = stoi(tmp);
+			denominator_vec.push_back(num);
+		}
+	}
+	return denominator_vec;
+}
+
+void  normalization_string(string &str)
+{
+	if (isdigit(str[0]))
+	{
+		str.insert(0, "+");
+	}
+}
+// 分子
+vector<int> get_numerator_(string expression) 
+{
+	vector<int> numerator_vec;
+	normalization_string(expression);
+
+	for (auto i = 0; i<expression.size(); i++)
+	{
+		
+		if (expression[i] == '+'||expression[i]=='-')
+		{
+			auto sign = expression[i] == '+' ? 1 : -1;
+			i++;
+			string tmp;
+			auto j = 0;
+			while (expression[i + j] != '/'&&i + j<expression.size())
+			{
+				tmp.push_back(expression[i + j]);
+				j++;
+			}
+			auto num = stoi(tmp);
+			numerator_vec.push_back(num*sign);
+		}
+	}
+	return numerator_vec;
+}
+
+
+int get_less_common_multipled(vector<int> list)
+{
+	auto first_num = list[0];
+	for (auto u = 1;u<list.size();u++)
+	{
+		auto second_num = list[u];
+		auto max_num = get_greatest_factor_2_nums(first_num, second_num);
+		first_num = first_num*second_num / max_num;
+	}
+	return first_num;
+}
+
+string fractionAddition(string expression) 
+{
+	auto denominator = get_denominator_(expression);
+	auto numerator_vec = get_numerator_(expression);
+
+	auto denominator_goes_to_num  = 1;
+	auto greatest_factor = get_less_common_multipled(denominator);
+
+	
+
+
+	vector<int> numerator_multipled;
+	for (auto i =0;i<numerator_vec.size();i++)
+	{
+		numerator_multipled.push_back(greatest_factor/denominator[i]*numerator_vec[i]);
+	}
+
+	auto ack_last = 0;
+	for (auto k =0;k<numerator_multipled.size();k++)
+	{
+		ack_last += numerator_multipled[k];
+	}
+
+	cout << "dfjsdkfj sf" << ack_last;
+
+	auto ret_greatest = get_greatest_factor_2_nums(ack_last, greatest_factor);
+
+
+	return to_string(ack_last/ret_greatest) + "/" + to_string(greatest_factor/ret_greatest);
+	
+}
+
+void test_fractionAddition()
+{
+	string fax = "5/3+1/3";
+	auto ack = fractionAddition(fax);
+	cout << "Fraction Addition and Subtraction" << ack << endl;
+
+}
+
+int time_pass_based_0000(string A)
+{
+	auto hours = 0;
+	auto minutes = 0;
+
+	string str_hours(A, 0,2);
+	string str_minutes(A,3,2);
+
+	return stoi(str_hours) * 60 + stoi(str_minutes);
+}
+
+int time_stamp_diff(string A,string B)
+{
+	auto start = time_pass_based_0000(A);
+	auto end = time_pass_based_0000(B);
+
+	if (start>12 * 60)
+	{
+		if (end<12*60)
+		{
+			end += 24 * 60;
+		}
+	}
+
+
+	return abs(end - start);
+}
+
+int findMinDifference(vector<string>& timePoints) 
+{
+	/*auto min = numeric_limits<int>::max();
+	for (auto i=0;i<timePoints.size()-1;i++)
+	{
+		for (auto j=i+1;j<timePoints.size();j++)
+		{
+			auto k = time_stamp_diff(timePoints[i], timePoints[j]);
+			auto kk = time_stamp_diff(timePoints[j], timePoints[i]);
+			int kkk = k < kk ? k : kk;
+			if (kkk<min)
+			{
+				min = kkk;
+			}
+		}
+	}
+		
+	cout << min;
+	return min;*/
+
+	auto ret = INT_MAX;
+	vector<int>nums;
+	for (auto k = 0; k < timePoints.size(); k++)
+		nums.push_back(time_pass_based_0000(timePoints[k]));
+	sort(nums.begin(), nums.end());
+	for (auto s=1;s<nums.size();s++)
+	{
+		ret = min(ret, nums[s] - nums[s - 1]);
+	}
+	return min(ret, 24 * 60 + nums[0] - nums.back());
+
+}
+
+void test_findMinDifference()
+{
+	
+	vector<string> vec({ "05:31","22:08","00:35" });
+	
+	int jax = findMinDifference(vec);
+	cout << "Minimum Time Difference" << jax;
+}
+
+vector<vector<int>> levelOrder(TreeNode* root)
+{
+	vector<vector<int>>ret;
+	queue<TreeNode *>qqqq;
+	qqqq.push(root);
+	while (!qqqq.empty())
+	{
+		auto so = qqqq.size();
+		vector<int> ack;
+		for (auto i = 0; i < so; i++)
+		{
+			auto top = qqqq.front();
+			ack.push_back(top->val);
+			qqqq.pop();
+			if (top->left)
+			{
+				qqqq.push(top->left);
+			}
+			if (top->right)
+			{
+				qqqq.push(top->right);
+			}
+		}
+		ret.push_back(ack);
+	}
+	return ret;
+}
+
+void test_levelOrder()
+{
+	auto node_3 = new TreeNode(3);
+	auto node_9 = new TreeNode(9);
+	auto node_20 = new TreeNode(20);
+	auto node_15 = new TreeNode(15);
+	auto node_7 = new TreeNode(7);
+
+
+	node_3->left = node_9;
+	node_3->right = node_20;
+
+	node_20->left = node_15;
+	node_20->right = node_7;
+	auto ack = levelOrder(node_3);
+	cout << "Binary Tree Level Order Traversal " << ack[0][0];
+}
+
+
+string decodeString(string s) {
+	vector<pair<int, string>> ack;
+	for (auto i = 0; i<s.size(); i++)
+	{
+		auto ch = s[i];
+		if (isdigit(ch))
+		{
+			auto k = 0;
+			string tmp;
+			i++; //数字加1
+			i++; //'[' 加1
+			while (i + k<s.size() && s[i + k] != ']')
+			{
+				tmp.push_back(s[i + k]);
+				k++;
+			}
+			pair<int, string> ans = make_pair(ch - '0', tmp);
+			ack.push_back(ans);
+			i += k;
+		}
+		else if (isalpha(ch))
+		{
+			string tmp(1, ch);
+			pair<int, string> ans = make_pair(1, tmp);
+			ack.push_back(ans);
+
+		}
+	}
+	string ret;
+	for (auto k = 0; k<ack.size(); k++)
+	{
+		auto num = (ack[k].first);
+		for (auto v = 0; v<num; v++)
+		{
+			ret += ack[k].second;
+		}
+	}
+	return ret;
+}
+
+/*
+ *
+ *   adnfndfds
+ *	 3[ef]
+ *	 
+ */
+bool is_last_partten(string s)
+{
+	if(isdigit(s[0]))
+	{
+		return s[1] == '['&&s.back() == ']';
+	}
+	for (auto j=0;j<s.size();j++)
+	{
+		if (!isalpha(s[j]))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+//"100[leetcode]"
+string handler_last_partten(string s)
+{
+	string ret;
+	if (isdigit(s[0]))
+	{
+		auto i = 0;
+		while (isdigit(s[i]))
+		{
+			i++;
+		}
+		auto num = stoi(string(s.begin(),s.begin()+i));
+
+		string unit(s, i+1, s.size() - i-2);
+		for (auto i=0;i<num;i++)
+		{
+			ret += unit;
+		}
+	}
+	else
+	{
+		ret = s;
+	}
+	return ret;
+}
+
+/*
+ *
+ *  得到合适的右括号位置
+ */
+// [fafj[dadfas][daf[aasd]afd]sakldf]
+vector<pair<int,int>> get_right_bracket_pos(string exp)
+{
+	vector<pair<int, int>>ret;
+	stack<char> s;
+	stack<int> p;
+	auto i = 0;
+	for (auto i=0;i<exp.size();i++)
+	{
+		if (exp[i]=='[')
+		{
+			s.push(exp[i]);
+			p.push(i);
+		}
+		else if(exp[i] == ']')
+		{
+			auto left = p.top();
+			cout << i << "   " << left << endl;
+			auto qut = make_pair(left, i);
+			ret.push_back(qut);
+			s.pop();
+			p.pop();
+		}
+	}
+	return ret;
+}
+
+string decodeString_v2(string s) {
+	string ret;
+	if(is_last_partten(s))
+	{
+		ret = handler_last_partten(s);
+		return ret;
+	}
+	auto list = get_right_bracket_pos(s);
+	for (auto i=0;i<list.size();i++)
+	{
+		ret += decodeString(string(s.begin(), s.begin() + list[i].first-1));
+		ret+= decodeString(string(s.begin() + list[i].first-1, s.begin() + list[i].second+1));
+		ret += decodeString( string(s.begin()+list[i].second+1, s.end()));
+
+	}
+	return ret;
+}
+
+string decodeString_v3(string s)
+{
+	auto list = get_right_bracket_pos(s);
+	while (list.size()>0)
+	{
+		auto left = list[0].first;
+		auto right = list[0].second;
+
+
+		auto j = left-1;
+		auto i = 0;
+		if (isdigit(s[j]))
+		{
+			while (j>=0&&isdigit(s[j]))
+			{
+				j--;
+				i++;
+			}
+		}
+		auto decodeed_one = handler_last_partten(string(s.begin() + left-i, s.begin() + right+1));
+		s.replace(s.begin() + left - i, s.begin() + right + 1, decodeed_one);
+		list = get_right_bracket_pos(s);
+	}
+	return s;
+}
+
+void test_decodeString()
+{
+	auto bar("2[abc]3[cd]ef");
+	auto ack = decodeString_v3(bar);
+	
+	cout << "394. Decode String" << ack;
+}
+
+
+vector<pair<int, int>> get_parentheses_pos(string exp)
+{
+	vector<pair<int, int>>ret;
+	stack<char> s;
+	stack<int> p;
+	auto i = 0;
+	for (auto i = 0; i<exp.size(); i++)
+	{
+		if (exp[i] == '(')
+		{
+			s.push(exp[i]);
+			p.push(i);
+		}
+		else if (exp[i] == ')')
+		{
+			auto left = p.top();
+			cout << left << "   " << i << endl;
+			auto qut = make_pair(left, i);
+			ret.push_back(qut);
+			s.pop();
+			p.pop();
+		}
+	}
+	return ret;
+}
+
+string get_trans_string(string tt)
+{
+	if(tt[0]=='(')
+	{
+		string num_str(tt.begin() + 1, tt.end() - 1);
+		if (num_str.empty())
+		{
+			return "1";
+		}
+		if (num_str.size() == 1) {
+			auto num_ = stoi(num_str);
+			return  to_string(num_ * 2);
+		}
+		else 
+		{
+			auto sum = 0;
+			// 需要处理特殊的情况 10 不可能出现
+			if (num_str.back() == '0')
+				return to_string(2 * (stoi(num_str)));
+
+
+
+			for (auto k = 0; k < num_str.size(); k++)
+				sum += (num_str[k] - '0');
+			return to_string(2*sum);
+		}
+	}
+	if (tt.size()>1)
+	{
+		auto sum = 0;
+		for (auto k = 0; k < tt.size(); k++)
+			sum += (tt[k] - '0');
+		return to_string(sum);
+	}
+	return tt;
+}
+
+vector<int> how_2_cut_str()
+{
+	return{};
+}
+
+int scoreOfParentheses(string S) 
+{
+	auto ttt= get_parentheses_pos(S);
+	string box;
+	auto addable = false;
+	if (ttt.back().first == 0) //说明这是一个表达式
+		addable = true;
+	while (!ttt.empty())
+	{
+		auto left = ttt[0].first;
+		auto right = ttt[0].second;
+		//vector<int> ant = 
+		string tmp(S.begin() + left, S.begin() + right+1);
+		auto new_one = get_trans_string(tmp);
+		S.replace(S.begin()+left, S.begin()+right + 1, new_one);
+		ttt = get_parentheses_pos(S);
+	}
+	if (!S.empty()&&!addable)
+	{
+		S = get_trans_string(S);
+	}
+
+	return stoi(S);
+}
+
+void test_scoreOfParentheses()
+{
+	//"(()(()()))"
+	string tez("()(())()(((()(()())))(((())(()))()))(((())))");
+	auto ack = scoreOfParentheses(tez);
+	cout << "Score of Parentheses" << ack;
+}
+
+vector<int> rightSideView(TreeNode* root) {
+	vector<vector<int>> awe;
+	if (!root)
+	{
+		return {};
+	}
+	queue<TreeNode*> bat;
+	bat.push(root);
+	while (!bat.empty())
+	{
+		auto bay = bat.size();
+		vector<int> cab;
+		for (auto bee=0;bee<bay;bee++)
+		{
+			
+			auto bed = bat.front();
+			cab.push_back(bed->val);
+			bat.pop();
+			if (bed->left)
+			{
+				bat.push(bed->left);
+			}
+			if (bed->right)
+			{
+				bat.push(bed->right);
+			}
+		}
+		awe.push_back(cab);
+	}
+
+	vector<int>dam;
+	for (auto i = 0; i < awe.size(); i++)
+		dam.push_back(awe[i].back());
+
+	return dam;
+}
+
+void test_rightSideView()
+{
+	auto node_1 = new TreeNode(1);
+	auto node_2 = new TreeNode(2);
+	auto node_3 = new TreeNode(3);
+	auto node_4 = new TreeNode(4);
+	auto node_5 = new TreeNode(5);
+
+	node_1->left = node_2;
+	node_1->right = node_3;
+
+	node_2->right = node_5;
+	node_3->right = node_4;
+	auto kfc = rightSideView(node_1);
+	cout << "Binary Tree Right Side View" << kfc[0] << endl;
+}
+
+void combine_help(vector<vector<int>>&ret,vector<int> &cur,vector<bool> visited,int n,int level,int k)
+{
+	if (level==k)
+	{
+		ret.push_back(cur);
+		return;
+	}
+
+	for (auto kkk=1;kkk<n+1;kkk++)
+	{
+		if (!visited[kkk])
+		{
+			visited[kkk] = true;
+			cur.push_back(kkk);
+			combine_help(ret, cur, visited, n, level + 1, k);
+			cur.pop_back();
+		}
+	}
+	
+}
+
+vector<vector<int>> combine(int n, int k) {
+	vector<vector<int>>ret;
+	vector<bool> visited(n+1, false);
+	vector<int>ack;
+	combine_help(ret, ack, visited, n, 0,k);
+	return ret;
+}
+
+void test_combine()
+{
+	auto van = 2;
+	auto tub = 4;
+	auto tug = combine(tub, van);
+	cout << "Combinations" << tug[0][0] << endl;
+}
+/**
+ *
+ *
+ * 前缀和 区间[i,j]前缀和为f[i]
+ *  1的个数为 f[j] - f[i-1]  
+ *  0的个数为 (j-i+1) - (f[j]-f[i-1])
+ *  
+ *  本质是枚举所有的操作 
+ *		边界左边的1的个数 全部变成0 
+ *		边界右边的0的个数 全部变成1
+ *		
+ *		每个边界操作的结果是相加的结果 取得最小值返回即可.
+ *
+ *
+ */
+int minFlipsMonoIncr(string S) {
+	int n = S.size();
+	vector<int> f(n + 1, 0);
+	for (auto i = 1; i <= n; i++)
+	{
+		f[i] = f[i - 1] + S[i - 1] - '0';
+	}
+	auto res = INT_MAX;
+	for (auto i = 1; i <= n; i++)
+	{
+		auto left = f[i - 1];
+		auto right = (n - i + 1 - (f[n] - f[i - 1]));
+		res = min(res, left + right);
+	}
+	res = min(res, f[n]);
+	return res;
+}
+
+void test_minFlipsMonoIncr()
+{
+	string S("00011000");
+	auto ack = minFlipsMonoIncr(S);
+	cout << "Flip String to Monotone Increasing" << ack;
+}
+
+bool lexical(int a,int b)
+{
+	auto a_str = to_string(a);
+	auto b_str = to_string(b);
+
+	return a_str < b_str;
+
+}
+
+vector<int> lexicalOrder_v1(int n) {
+	vector<int> fox;
+	for (auto k=1;k<n+1;k++)
+	{
+		fox.push_back(k);
+	}
+	sort(fox.begin(), fox.end(), lexical);
+	return fox;
+}
+
+/**
+ *2000
+ *200
+ *20
+ *2
+ *
+ *
+ */
+
+int get_proper_num(int n,int k)
+{
+	if (!(k%10))
+	{
+		return get_proper_num(n, k / 10);
+	}
+	return k;
+	
+}
+
+vector<int> lexicalOrder_v2(int n) {
+	vector<int>ack(n, 1);// [1,n]
+	
+	for (auto i=1;i<n;i++)
+	{
+		if (ack[i-1]*10<=n)
+		{
+			ack[i] = ack[i-1] * 10;
+		}
+		else
+		{
+			ack[i] = (ack[i-1] + 1)%10==0? get_proper_num(n,ack[i-1]+1): 
+			((ack[i-1] + 1)>n?(get_proper_num(n,(ack[i-1]+1)/10+1)):ack[i-1] + 1);
+		}
+	}
+	return ack;
+}
+void test_lexicalOrder()
+{
+	auto n = 10;
+	auto ack = lexicalOrder_v2(192);
+	cout << "Lexicographical Numbers" << ack[0] << endl;
+}
+
+
+double knightProbability(int N, int K, int r, int c) {
+	if (K==1)
+	{
+		return 1;
+	}
+	vector<vector<vector<double>>> dp(K, vector<vector<double>>(N, vector<double>(N, 1)));
+	vector<vector<int>> dirs{ { -1,-2 },{ -2,-1 },{ -2,1 },{ -1,2 },{ 1,2 },{ 2,1 },{ 2,-1 },{ 1,-2 } };
+	for (auto k=1;k<K;k++)
+	{
+		for (auto i=0;i<N;i++)
+		{
+			for (auto j=0;j<N;j++)
+			{
+				for(auto u=0;u<8;u++)
+				{
+					auto x = i;
+					x+= dirs[u][0];
+					auto y = j; 
+					y+= dirs[u][1];
+					if (x >= N || x < 0 || y >= N||y<0)
+					{
+						continue;
+					}
+					dp[k][i][j] += dp[k - 1][x][y];
+				
+				}
+			}
+		}
+	}
+	return dp[K - 1][r][c]/pow(8,K);
+}
+
+void test_knightProbability()
+{
+	auto N = 3;
+	auto K = 2;
+	auto r = 0;
+	auto c = 0;
+	auto ack = knightProbability(N, K, r, c);
+	cout << "688. Knight Probability in Chessboard" << ack;
+}
+
+string handler_phone(string phone_num)
+{
+	auto k = 0;
+	while (k<phone_num.size())
+	{
+		if (phone_num[k] == ')' || phone_num[k] == '('||phone_num[k]=='-'||phone_num[k]=='+'||phone_num[k]==' ')
+		{
+			phone_num.erase(k, 1);
+		}
+		else
+		{
+			k++;
+		}
+	}
+	auto ch = phone_num[phone_num.size() - 4];
+	auto end = string(phone_num.end() - 3, phone_num.end());
+	auto start = "";
+	if (phone_num.size()==13)
+	{
+		start = "+***";
+	} 
+	else if(phone_num.size()==12)
+	{
+		start = "+**";
+	}
+	else if(phone_num.size()==11)
+	{
+		start = "+*";
+	}
+	if (phone_num.size() > 10)
+		return start + string("-***-***-") + string(1, ch) + end;
+	return "***-***-"+ string(1, ch) + end;
+}
+
+string tolowerString(string s)
+{
+	for (auto &ch:s)
+	{
+		if (isalpha(ch))
+		{
+			ch = tolower(ch);
+		}
+	}
+	return s;
+}
+
+string handler_email(string email)
+{
+	auto i = 0;
+	for (i; i < email.size(); i++)
+	{
+		if (email[i]=='@')
+		{
+			break;
+		}
+	}
+	string end(email.begin() + i, email.end());
+	return string(1, tolower(email[0])) + "*****" + string(1, tolower(email[i - 1])) + tolowerString(end);
+}
+
+
+string maskPII(string S) {
+	auto e = false;
+	for(auto ch : S)
+	{
+		if(ch=='@')
+		{
+			return handler_email(S);
+		}
+		
+	}
+	return handler_phone(S);
+}
+
+void test_maskPII()
+{
+	auto s1("AB@qq.com");
+	auto s2("+(501321)-50-23431");
+
+	auto s3("86-(10)12345678");
+
+	auto ack = maskPII(s3);
+	cout << "831. Masking Personal Information" << ack;
+}
+
+vector<int> vec_union(vector<int> &A,vector<int> B)
+{
+	for (auto i=0;i<B.size();i++)
+	{
+		A.emplace_back(B[i]);
+	}
+	return A;
+}
+
+
+vector<int> vec_int(int N)
+{
+	if (N < 10)
+		return{ N };
+
+	vector<int > ret = vec_int(N / 10);
+	return vec_union(ret, vec_int(N % 10));
+}
+
+
+bool isup_not_restrict(int N)
+{
+	vector<int> vec = vec_int(N);
+	if (vec.size()==1)
+	{
+		return true;
+	}
+	return vec[0] <= vec[1] && isup_not_restrict(N);
+}
+
+bool isbigger(vector<int> num,int k)
+{
+	for (auto j=k;j>=0;j--)
+	{
+		if (num[j]>num[k])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+int monotoneIncreasingDigits(int N) 
+{
+	auto vec = vec_int(N);
+	auto i = vec.size() - 1;
+	auto ss = i+1;
+	for (i;i>0;i--)
+	{
+		if (vec[i - 1] > vec[i] )
+		{
+			vec[i - 1] -=1;
+			ss = i;
+		
+		}
+		
+	}
+//	cout << "@@@ " << j<<ss << endl;
+
+	
+	for (auto s=ss;s<vec.size();s++)
+	{
+		vec[s] = 9;
+	}
+	
+	auto ans = 0;
+	for (int k=vec.size()-1;k>=0;k--)
+	{
+		auto l = vec.size() - k-1;
+		ans += vec[k] * pow(10, l);
+	}
+	return ans;
+}
+ // 499699
+ // 499999
+void test_monotoneIncreasingDigits()
+{
+	int n = 1234;
+	auto ack = monotoneIncreasingDigits(n);
+	cout << "738. Monotone Increasing Digits" << ack;
+}
+
+int numRescueBoats(vector<int>& people, int limit) 
+{
+	int ans = 0;
+	sort(people.begin(), people.end());
+	int i = 0, j = people.size() - 1;
+	while (i <= j) {
+		if (i != j && people[i] + people[j] <= limit) {
+			i++;
+			j--;
+			ans++;
+		}
+		else {
+			j--;
+			ans++;
+		}
+	}
+	return ans;
+}
+
+void test_numRescueBoats()
+{
+	vector<int> people{ 2,4 };
+	auto limits = 5;
+	auto ack = numRescueBoats(people, limits);
+	cout << "881. Boats to Save People " << ack << endl;
+}
+
+
 int main()
 {
 //	cout << "woolgatherer.cpp";
 	{
-	//	test_findMaxAverage();
-	//	test_addBinary();
-	//	test_isSymmetric();
-	//	test_searchInsert();
-	//	test_reverseStr();
-	//	test_backspaceCompare();
-	//	test_insertIntoBST();
-	//	test_redundant_else(2);
-	//	test_isPalindrome();
-	//	test_reverseBits();
-	//	test_isPalindrome_linkList();
-	//	test_convertToTitle();
-	//	test_buddyStrings();
-	}
+	//test_findMaxAverage();
+	//test_addBinary();
+	//test_isSymmetric();
+	//test_searchInsert();
+	//test_reverseStr();
+	//test_backspaceCompare();
+	//test_insertIntoBST();
+	//test_redundant_else(2);
+	//test_isPalindrome();
+	//test_reverseBits();
+	//test_isPalindrome_linkList();
+	//test_convertToTitle();
+	//test_buddyStrings();
 	//test_getIntersectionNode();
 	//test_isIsomorphic();
 	//test_compress();
@@ -1545,6 +3461,37 @@ int main()
 	//test_addStrings();
 	//test_findRestaurant();
 	//test_intersect();
-	test_binaryTreePaths();
+	//test_binaryTreePaths();
+	//test_flipEquiv();
+	//test_deckRevealedIncreasing(); //?
+	//test_matrixScore();
+	//test_removeDuplicates();
+	//test_intersect_Quad_Node();//?
+	//test_validMountainArray();
+	//test_frequencySort(); // ??
+	//test_topKFrequent();
+	//test_printTree();
+	//test_kthSmallest(); //?
+	//test_detectCycle();
+	//test_findDuplicate();
+	//test_addOneRow();
+	//test_leafSimilar();
+	//test_spiralMatrixIII(); ?
+	//test_numTrees();
+	//test_isNStraightHand();
+	//test_fractionAddition();
+	//test_findMinDifference();
+	//test_levelOrder();
+	//test_decodeString();
+	//test_scoreOfParentheses();?
+	//test_rightSideView();
+	//test_combine();
+	//test_minFlipsMonoIncr();
+	}
+	//test_lexicalOrder();
+	//test_knightProbability(); //?
+	//test_maskPII();
+	//test_monotoneIncreasingDigits();
+	test_numRescueBoats();
 
 }
