@@ -5292,7 +5292,7 @@ int main() {
 		//test_rotate();
 		//test_convertToBase7();
 		//test_getRow();
-		test_plusOne();  
+		//test_plusOne();  
 		//test_findDiagonalOrder();
 		//test_findTargetSumWays();	  //?
 		//test_bulbSwitch();

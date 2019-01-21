@@ -4,7 +4,7 @@
 // password : Peng0peng
 
 #if 0
-#endif
+
 
 /**
 * \brief
@@ -3492,6 +3492,8 @@ int main()
 	//test_knightProbability(); //?
 	//test_maskPII();
 	//test_monotoneIncreasingDigits();
-	test_numRescueBoats();
+	//test_numRescueBoats();
 
 }
+
+#endif
