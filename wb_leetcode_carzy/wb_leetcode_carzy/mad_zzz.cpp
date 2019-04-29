@@ -662,8 +662,6 @@ int cal_basic(string str) // 基础计算
 		return i_ - j_;
 }
 
-
-
 vector<int> diffWaysToCompute(string input) 
 {
 	vector<int> index;
@@ -858,16 +856,44 @@ void test_MyCircularDeque()
 
 
 class Codec {
-public:
-	
-	// Encodes a tree to a single string.
+public:	
+	// Encodes a tree to a single string.  // 先做一个中序遍历
 	string serialize(TreeNode* root) {
+		ostringstream out;
+		serialize(root, out);
+		return out.str();
+ 	}
 
+	void serialize(TreeNode* root,ostringstream &out) {
+		if(root)
+		{
+			out << root->val << ' ';
+			serialize(root->left, out);
+			serialize(root->right, out);
+		}else
+		{
+			out << "#";
+		}
 	}
 
-	// Decodes your encoded data to tree.
-	TreeNode* deserialize(string data) {
+	TreeNode *deserialize(string data)
+	{
+		istringstream in(data);
+		return deserialize(in);
+	}
 
+	TreeNode *deserialize(istringstream &in)
+	{
+		string val;
+		in >> val;
+		if(val=="#")
+		{
+			return nullptr;
+		}
+		TreeNode *root = new TreeNode(stoi(val));
+		root->left = deserialize(in);
+		root->right = deserialize(in);
+		return root;
 	}
 };
 
@@ -958,7 +984,1063 @@ void test_MyCircularQueue()
 
 }
 
+bool is_same_tree(TreeNode *root1,TreeNode *root2)
+{
+	if (!root1)
+	{
+		return !root2;
+	}
+	if (!root2)
+	{
+		return !root1;
+	}
+	return  root1->val == root2->val && is_same_tree(root1->left, root2->left) && is_same_tree(root1->right, root2->right);
 
+
+}
+
+vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) 
+{
+	if (!root)
+	{
+		return{};
+	}
+
+}
+
+void test_findDuplicateSubtrees()
+{
+	TreeNode *n1 = new TreeNode(1);
+	TreeNode *n2_1 = new TreeNode(2);
+	TreeNode *n3 = new TreeNode(3);
+	TreeNode *n4_1 = new TreeNode(4);
+
+	TreeNode *n2_2 = new TreeNode(2);
+	TreeNode *n4_2 = new TreeNode(4);
+
+	TreeNode *n4_3 = new TreeNode(4);
+
+
+	n1->left = n2_1;
+	n1->right = n3;
+	n2_1->left = n4_1;
+
+	n3->left = n2_2;
+	n3->right = n4_2;
+
+	n2_2->left = n4_3;
+
+	auto obj = new  Codec();
+	cout << obj->serialize(n1);
+}
+
+void test_Codec()
+{
+	TreeNode *n1 = new TreeNode(1);
+	TreeNode *n2 = new TreeNode(2);
+	TreeNode *n3 = new TreeNode(3);
+	TreeNode *n4 = new TreeNode(4);
+
+	n1->left = n2;
+
+	n2->left = n3;
+
+	auto obj = new Codec;
+	auto str =  obj->serialize(n1);
+	cout << str;
+}
+
+
+// 标记出friend_A的所有朋友
+void traversing_graph(vector<vector<int>> &M,vector<bool> &visited,int cur_node)
+{
+	visited[cur_node] = true;
+	for (int k=0;k<M[0].size();k++)
+	{
+		if(!M[cur_node][k]||visited[k])
+			continue;
+		traversing_graph(M, visited, k);
+	}
+
+}
+
+int findCircleNum(vector<vector<int>>& M) {
+	vector<bool> visited(M.size(),false);
+	int cnt = 0;
+	for (auto i = 0; i < M.size(); i++)
+	{
+		if (visited[i])
+		{
+			continue;
+		}
+		traversing_graph(M, visited, i);
+		cnt++;
+	}
+	return cnt;
+}
+
+void test_findCircleNum()
+{
+	vector<vector<int>> M =
+	{
+		{ 1,1,0,0,0,0,0,1,0,0,0,0,0,0,0 },
+		{ 1,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+		{ 0,0,1,0,0,0,0,0,0,0,0,0,0,0,0 },
+		{ 0,0,0,1,0,1,1,0,0,0,0,0,0,0,0 },
+		{ 0,0,0,0,1,0,0,0,0,1,1,0,0,0,0 },
+		{ 0,0,0,1,0,1,0,0,0,0,1,0,0,0,0 },
+		{ 0,0,0,1,0,0,1,0,1,0,0,0,0,1,0 },
+		{ 1,0,0,0,0,0,0,1,1,0,0,0,0,0,0 },
+		{ 0,0,0,0,0,0,1,1,1,0,0,0,0,1,0 },
+		{ 0,0,0,0,1,0,0,0,0,1,0,1,0,0,1 },
+		{ 0,0,0,0,1,1,0,0,0,0,1,1,0,0,0 },
+		{ 0,0,0,0,0,0,0,0,0,1,1,1,0,0,0 },
+		{ 0,0,0,0,0,0,0,0,0,0,0,0,1,0,0 },
+		{ 0,0,0,0,0,0,1,0,1,0,0,0,0,1,0 },
+		{ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,1 },
+	};
+//	{ { 1,0,0,1 },{ 0,1,1,0 },{ 0,1,1,1 },{ 1,0,1,1 } };
+
+	cout << "547. Friend Circles" << findCircleNum(M);
+	return;
+}
+
+// [0,2]  [1,5]
+// 如果没有交集  返回错误的交集[-1,0]
+Interval cal_inter_section( Interval &A,  Interval &B)
+{
+	Interval ahead = A.start <= B.start ? A : B;
+	Interval last = (ahead.start == A.start&&ahead.end==A.end) ? B : A;
+
+	if(last.start<=ahead.end)
+	{
+		return Interval(last.start, min(last.end, ahead.end));
+	}
+	return Interval(-1, 0);
+}
+
+vector<Interval> intervalIntersection(vector<Interval>& A, vector<Interval>& B) 
+{
+	/*int i = 0;
+	int j  = 0;
+	vector<Interval> ans;
+	while (i!=A.size()&&j!=B.size())
+	{
+		auto ret =  cal_inter_section(A[i], B[j]);
+		if(ret.start!=-1)
+			ans.push_back(ret);
+	}*/
+	vector<Interval> ans;
+	for (int i = 0; i < A.size(); i++)
+	{
+		for (int j=0;j<B.size();j++)
+		{
+			auto ret = cal_inter_section(A[i], B[j]);
+			if (ret.start != -1)
+				ans.push_back(ret);
+		}
+	}
+
+	return ans;
+	
+}
+
+
+
+
+
+void test_intervalIntersection()
+{
+	Interval _1 = Interval(0, 2);
+	Interval _2 = Interval(5, 10);
+	Interval _3 = Interval(13, 23);
+	Interval _4 = Interval(24, 25);
+	
+
+	Interval _1_ = Interval(1, 5);
+	Interval _2_ = Interval(8, 12);
+	Interval _3_ = Interval(15, 24);
+	Interval _4_ = Interval(25, 26);
+
+	vector<Interval> A;
+	A.push_back(_1);
+	A.push_back(_2);
+	A.push_back(_3);
+	A.push_back(_4);
+
+
+	vector<Interval> B;
+	B.push_back(_1_);
+	B.push_back(_2_);
+	B.push_back(_3_);
+	B.push_back(_4_);
+
+
+	intervalIntersection(A, B);
+	cout << "986. Interval List Intersections " << endl;
+	
+}
+
+int get_sum_by_index(vector<int>&nums, int start,int end)
+{
+	auto sum = 0;
+	auto up = end >= start;
+	for (auto i=start;i<=end;up?i++:i--)
+	{
+		sum += nums[i];
+	}
+	return sum;
+}
+
+int pivotIndex_0(vector<int>& nums)
+{
+	if (nums.size() == 0)
+		return -1;
+	auto cur_index = 0;
+	while (cur_index!=nums.size())
+	{
+	
+		auto a = get_sum_by_index(nums, 0, cur_index - 1);
+		auto b = get_sum_by_index(nums, cur_index + 1, nums.size() - 1);
+		
+		if (a==b)
+		{
+			return cur_index;
+		}
+		cur_index++;
+	}
+	return -1;
+}
+
+
+
+int pivotIndex(vector<int>& nums)
+{
+	if (nums.size() == 0)
+		return -1;
+	auto cur_index = 0;
+	auto s1 = 0;
+	auto s2 = get_sum_by_index(nums, 0, nums.size() - 1)-nums[0];
+	if (s1 == s2)
+		return 0;
+	cur_index++;
+	while (cur_index != nums.size())
+	{
+		
+		cout << "s1===>  " << s1 << endl;
+		cout << "s2===>  " << s2 << endl;
+
+
+		s1 += nums[cur_index-1];
+		s2 -= nums[cur_index];
+		
+		
+		cout << "s1  " << s1 << endl;
+		cout << "s2  " << s2 << endl;
+
+		if (s1 == s2)
+		{
+			return cur_index;
+		}
+		
+		
+		cur_index++;
+	}
+	return -1;
+}
+
+void test_pivot_index()
+{
+	//vector<int> nums = { 1, 7, 3, 6, 5, 6 };
+	vector<int> nums = { -1,-1,-1,0,1,1 };
+	cout << "724. Find Pivot Index" << endl;
+	cout << pivotIndex(nums);
+}
+
+
+
+int countSegments(string s)
+{
+
+	auto cnt = 0;
+	if (s.empty())
+		return 0;
+	for (auto i = 0; i < s.size();)
+	{
+		auto word = false;
+		while (i<s.size()&& s[i] != ' ')
+		{
+			word = true;
+			i++;
+		}
+		if (word &&(i == s.size() || s[i] == ' '))
+		{
+			cnt++;
+		}
+		while (s[i] == ' '&&i<s.size())
+		{
+			i++;
+		}
+	}
+	return cnt;
+}
+
+void test_countSegments()
+{
+	cout << "434. Number of Segments in a String" << endl;
+	string s("   is John   ");
+//	s = "         ";
+	cout << countSegments(s);
+}
+
+int cal_dis(int index,bool go_right,vector<int>&seats)
+{
+	int end = 0;
+	auto cnt = 0;
+	if (go_right)
+	{
+		end = seats.size()-1;
+		int i = 0;
+		for (i=index;i<=end;i++)
+		{
+			if(!seats[i])
+			{
+				cnt++;
+			}
+			else
+			{
+				break;
+			}
+			
+		}
+		if (i == seats.size())
+			return numeric_limits<int>::max();
+		
+	}
+	else
+	{
+		int i = 0;
+		for (i=index;i>=0;i--)
+		{
+			if (!seats[i])
+			{
+				cnt++;	
+			}
+			else
+			{
+				break;
+			}
+			
+		}
+		if (i == -1)
+			return numeric_limits<int>::max();
+	}
+	return cnt;
+}
+
+int maxDistToClosest(vector<int>& seats) 
+{
+	vector<int> dp(seats.size(),0);
+	for (auto i=0;i<seats.size();i++)
+	{
+		if(!seats[i])
+		{
+			auto left = cal_dis(i, 0, seats);
+			auto right = cal_dis(i, 1, seats);
+			cout <<i<< "left " << left << "      right" << right << endl;
+			dp[i] = min(left, right);
+		}
+	}
+	auto ret = -1;
+	for (auto k=0;k<dp.size();k++)
+	{
+		if (dp[k]>ret)
+		{
+			ret = dp[k];
+		}
+	}
+	return ret;
+}
+
+void test_maxDistToClosest()
+{
+	cout << "849. Maximize Distance to Closest Person" << endl;	
+	vector<int> seats({ 1, 0, 0, 0, 1, 0, 1 });
+//	vector<int> seats({ 1, 0, 0, 0 });
+	cout << maxDistToClosest(seats);
+}
+
+string licenseKeyFormatting(string S, int K) 
+{
+	string uppercase_nodash_str;
+	for (auto ch : S)
+	{
+		if (isalpha(ch))
+		{
+			if (ch>='a'&&ch<='z')
+			{
+				uppercase_nodash_str.push_back(ch-'a'+'A');
+			}
+			else
+			{
+				uppercase_nodash_str.push_back(ch);
+			}
+			
+
+		}
+		else if(isdigit(ch))
+		{
+			uppercase_nodash_str.push_back((ch));
+		}
+	}
+	if (uppercase_nodash_str.size() == 0)
+		return "";
+	auto first = uppercase_nodash_str.size() % K;
+	string str;
+	bool first_start = true;
+	for (auto i=0;i<uppercase_nodash_str.size();)
+	{
+		if(first_start)
+		{
+			for (auto j=0;j<first;j++)
+			{
+				str.push_back(uppercase_nodash_str[i]);
+				i++;
+			}
+			if(first&&uppercase_nodash_str.size()>K)
+				str.push_back('-');
+			first_start = false;
+		}
+		for (auto v=0;v<K&&v+i<uppercase_nodash_str.size();v++)
+		{
+			str.push_back(uppercase_nodash_str[v + i]);
+		}
+		str.push_back('-');
+		i += K;
+	}
+	return string(str.begin(), str.end() - 1);
+}
+
+
+void test_licenseKeyFormatting()
+{
+	cout << "482. License Key Formatting" << endl;
+	string s("5F3Z-2e-9-w");
+	s = "2-5g-3-J";
+	s = "2";
+	auto k = 4;
+	k = 2;
+	cout << licenseKeyFormatting(s, k);
+
+}
+
+int dominantIndex(vector<int>& nums) {
+	auto index = -1;
+	auto biggest = 0;
+	auto second_biggest = 0;
+	for (auto i=0;i<nums.size();i++)
+	{
+		if (nums[i]>=biggest)
+		{	
+			second_biggest = biggest;
+			biggest = nums[i];
+			index = i;
+			
+		}
+		else if(nums[i]>=second_biggest)
+		{
+			second_biggest = nums[i];
+		}
+	}
+	return biggest >= 2 * second_biggest ? index : -1;
+}
+
+void test_dominantIndex()
+{
+	vector<int> nums({ 3, 6, 1, 0 });
+	nums = { 1, 2, 3, 4 };
+	auto ack = dominantIndex(nums);
+	cout << "747. Largest Number At Least Twice of Others" << endl;
+	cout << ack;
+}
+
+
+
+bool is_good_substring(string s,string sub)
+{
+	auto len_s = s.size();
+	auto len_sub = sub.size();
+	if (!len_s%len_sub || len_s==len_sub)
+	{
+		return false;
+	}
+	int cnt = len_s / len_sub;
+
+	string tmp_sub = string(s.begin(), s.begin() + len_sub);
+	
+	cout << s<<"                   " << sub << endl;
+	return tmp_sub == sub;
+}
+
+
+bool repeatedSubstringPattern(string s) {
+	for (auto i=0;i<s.size();i++)
+	{
+		for (auto j=1;j<s.size()-i+1;j++)
+		{
+			if (is_good_substring(s,s.substr(i,j)))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void test_repeatedSubstringPattern()
+{
+	cout << "459. Repeated Substring Pattern" << endl;
+	string s("abab");
+	auto ack = repeatedSubstringPattern(s);
+	cout << ack;
+}
+
+
+/*
+ *			  5
+             / \
+            4   5
+           / \   \
+          1   1   5
+ *
+ *
+ */
+int longestUnivaluePath(TreeNode* root) {
+	return 0;
+}
+
+void test_longestUnivaluePath(){
+	cout << "687. Longest Univalue Path" << endl;
+	auto node0 = new TreeNode(5);
+	auto node1 = new TreeNode(4);
+	auto node2 = new TreeNode(5);
+	auto node3 = new TreeNode(1);
+	auto node4 = new TreeNode(1);
+	auto node5 = new TreeNode(5);
+
+	node0->left = node1;
+	node0->right = node2;
+}
+
+
+int find_special_largest_nums(vector<int> &A,int low,int up)
+{
+	for (int j=up;j>=low;j--)
+	{
+		for (int i = 0; i < A.size(); i++) {
+			if (A[i] == j)
+			{
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
+
+
+string largestTimeFromDigits_XXX(vector<int>& A) 
+{
+	vector<int> ret;
+	int first_index = find_special_largest_nums(A, 0, 2);
+	if (first_index == -1)
+		return "";
+	if(A[first_index]==2)
+	{
+		ret.push_back(2);
+		A.erase(A.begin() + first_index);
+		int second_index = find_special_largest_nums(A, 0, 3);
+		if (second_index == -1)
+			return "";
+		ret.push_back(A[second_index]);
+		A.erase(A.begin() + second_index);
+		int third_index = find_special_largest_nums(A, 0, 5);
+		if (third_index == -1)
+			return "";
+		ret.push_back(A[third_index]);
+		A.erase(A.begin() + third_index);
+		int fouth_index = find_special_largest_nums(A, 0, 9);
+		ret.push_back(A[fouth_index]);
+
+
+		cout << "xxxx" << endl;
+	}
+	else
+	{
+		ret.push_back(A[first_index]);
+		A.erase(A.begin() + first_index);
+		int second_index = find_special_largest_nums(A, 0, 9);
+		if (second_index == -1)
+			return "";
+		ret.push_back(A[second_index]);
+		A.erase(A.begin() + second_index);
+		int third_index = find_special_largest_nums(A, 0, 5);
+		if (third_index == -1)
+			return "";
+		ret.push_back(A[third_index]);
+		A.erase(A.begin() + third_index);
+		int fouth_index = find_special_largest_nums(A, 0, 9);
+		ret.push_back(A[fouth_index]);
+
+		cout << "yyyyy" << endl;
+	}
+
+	string ack = "";
+	for (int i = 0; i < 4; i++)
+	{
+		ack.push_back(ret[i] + '0');
+		if(i==1)
+		{
+			ack.push_back(':');
+
+		}
+	}
+	
+	return ack;
+}
+
+
+void dfs(vector<int> &A,int cur,vector<int> &C,vector<bool>&visited)
+{
+	if (cur == A.size()) {
+		for (int j = 0; j < C.size(); j++)
+			cout << C[j];
+		cout << endl;
+		return;
+	}
+	for (int i=cur;i<A.size();i++)
+	{
+		if(!visited[i])
+		{
+			visited[i] = true;
+			C.push_back(A[i]);
+			dfs(A, cur+1, C,visited);
+			C.pop_back();
+		}
+		
+	}
+}
+
+string largestTimeFromDigits(vector<int >&A)
+{
+	//sort(A.begin(), A.end());
+	vector<int> CCC;
+	vector<bool> visited(A.size(), false);
+	dfs(A, 0, CCC,visited);
+	return "";
+	
+}
+
+void test_largestTimeFromDigits()
+{
+	vector<int> nums({ 2,0,6,7});
+
+	auto ack = largestTimeFromDigits(nums);
+	cout << "949. Largest Time for Given Digits" << endl;
+}
+
+
+TreeNode * create_all_possible_tree(int N,vector<TreeNode *>&list)
+{
+	if (N == 1)
+	{
+		auto ret = new TreeNode(0);
+		list.push_back(ret);
+		return ret;
+	}
+	for (int i=1;2*i+1<=N;i+=2)
+	{
+		auto root = new TreeNode(0);
+		auto left = create_all_possible_tree(i, list);
+		auto right = create_all_possible_tree(N - 1 - i, list);
+		root->left = left;
+		root->right = right;
+		list.push_back(root);
+		return root;
+	}
+}
+
+vector<TreeNode*> allPossibleFBT(int N) {
+	if (N == 1)
+		return { new TreeNode(0)};
+	vector<TreeNode *>ret;
+	for (int i=1;i<N;i+=2)
+	{
+		auto left = allPossibleFBT(i);
+		auto right = allPossibleFBT(N -i-1);
+		for (auto i_left:left)
+		{
+			for (auto i_right:right)
+			{
+				auto root = new TreeNode(0);
+				root->left = i_left;
+				root->right = i_right;
+				ret.push_back(root);
+			}
+		}
+	}
+	return ret;
+}
+
+void test_allPossibleFBT()
+{
+	int N = 7;
+	cout << "894. All Possible Full Binary Trees";
+	vector<TreeNode *> ack = allPossibleFBT(N);
+	return;
+}
+
+vector<int> partitionLabels(string S) {
+	unordered_map<char, int> ttt;
+	for (int i=0;i<S.size();++i)
+	{
+		ttt[S[i]] = i;
+	}
+	int start = 0; int last = 0;
+	vector<int> ret;
+	for (int i = 0; i < S.size(); ++i) // 遍历所有的字符 如果当前的index小于字符所在位置的最小值,那就一直变量 
+	{
+		last = max(last, ttt[S[i]]);
+		if(i==last)
+		{
+			ret.push_back(last - start + 1);
+			start = last + 1;
+		}
+	}
+
+	return ret;
+}
+
+bool sort_map(pair<char, int> A, pair<char, int> B)
+{
+	return B.second < A.second;
+}
+
+bool is_legal_string(string S)
+{
+	for (int i = 1; i < S.size(); i++)
+	{
+		if (S[i] == S[i - 1])
+			return false;
+	}
+	return true;
+}
+
+string reorganizeString(string S) {
+	map<char, int> ttt;
+	for (int i=0;i<S.size();++i)
+	{
+		ttt[S[i]]++;
+	}
+	// 策略 先放数量多的字符 
+	vector<pair<char, int>> vec;
+	for(auto it = ttt.begin();it!=ttt.end();++it)
+	{
+		char ch = it->first;
+		int ch_num = it->second;
+		vec.push_back(make_pair(ch,ch_num));
+	}
+	sort(vec.begin(), vec.end(), sort_map);
+	string a_ret(S);
+
+	for (int i = 0; i < S.size(); )
+	{
+		if(vec.begin()->second>=1)
+		{
+	    	a_ret[i++] = vec.begin()->first;
+			cout << "   11   " << vec.begin()->first<<endl;
+			vec.begin()->second -= 1;
+			sort(vec.begin(), vec.end(), sort_map);
+		}
+
+		if(vec.begin()+1!=vec.end()&& (vec.begin() + 1)->first!=a_ret[i-1])
+		{
+			if ((vec.begin()+1)->second >= 1)
+			{
+				a_ret[i++] = (vec.begin()+1)->first;
+				cout << "   22   " << (vec.begin()+1)->first << endl;
+
+				(vec.begin()+1)->second -= 1;
+			}
+			
+		}
+		sort(vec.begin(), vec.end(), sort_map);
+		
+	}
+	cout << a_ret << endl;
+	if (is_legal_string(a_ret))
+		return a_ret;
+	return "";
+}
+
+
+
+
+
+
+
+void test_reorganizeString()
+{
+	cout << "767. Reorganize String" << endl;
+	string s = "rvhrlpiesrrryrbrrrrrxrkirranrrrrbdrrzgasoxrrr";/**/
+	
+	auto ack = reorganizeString(s);
+	//cout <<"out  "<< ack1<<endl;
+	cout <<"out " << ack;
+
+	return;
+}
+
+void test_partitionLabels()
+{
+	cout << "763. Partition Labels";
+	string s = "ababcbacadefegdehijhklij";
+	auto ack = partitionLabels(s);
+	return;
+}
+
+	void solver(TreeNode *root,TreeNode* parent, int &ans)
+	{
+		if (!root)
+		{
+			return;
+		}
+		solver(root->left,root,ans);
+		solver(root->right,root,ans);
+
+		if(root->val>1) // 将多余的给到父节点
+		{
+			parent->val += (root->val-1);
+			ans+= (root->val-1);
+			root->val = 1;
+		}
+		else if(root->val<1) // 从父节点拿过来
+		{
+			parent->val -= (1 - root->val);
+			ans += (1 - root->val);
+			root->val = 1;
+		}
+	}
+
+	int distributeCoins(TreeNode* root) {
+		int ans = 0;
+		solver(root,nullptr, ans);
+		cout << ans;
+		return ans;
+	}
+
+void test_distributeCoins(){
+	TreeNode *node_3 = new TreeNode(0);
+	TreeNode *node_0_0 = new TreeNode(3);
+	TreeNode *node_0_1 = new TreeNode(0);
+
+	node_3->left = node_0_0;
+	node_3->right = node_0_1;
+	distributeCoins(node_3);
+}
+
+vector<int> sortArray(vector<int>& nums) {
+	sort(nums.begin(), nums.end());
+	return nums;
+}
+
+void test_sortArray()
+{
+	vector<int> arr = { 0, 0, 1, 1, 2, 5 };
+	auto ack  = sortArray(arr);
+}
+
+
+/*
+ *[
+ * [1,4],[1,5],[2,5],[2,4],[2,3],[1,3],
+ * [0,3],[0,4],[0,5],[3,5],[3,4],[3,3],
+ * [3,2],[2,2],[1,2],[0,2],[4,5],[4,4],
+ * [4,3],[4,2],[4,1],[3,1],[2,1],[1,1],
+ * [0,1],[4,0],[3,0],[2,0],[1,0],[0,0],
+ *]
+ *
+ *
+ */
+
+vector<vector<int>> spiralMatrixIII(int R, int C, int r0, int c0) 
+{
+	return{ {} };
+}
+
+void test_spiralMatrixIII()
+{
+	int R, C, r0, c0;
+	R = 5, C = 6, r0 = 1, c0 = 4;
+	cout << "885. Spiral Matrix III";
+	auto kkk = spiralMatrixIII(R, C, r0, c0);
+}
+
+string i_2_sting(int i)
+{
+	if (i == 0)
+		return "0";
+	if (i == 1)
+		return "1";
+	return i_2_sting(i / 2) + i_2_sting(i % 2);
+}
+
+bool queryString(string S, int N) 
+{
+	for (int i=1;i<=N;++i)
+	{
+		auto check_str = i_2_sting(i);
+		cout << " check_str" << check_str<<endl;
+		if(S.find(check_str)==std::string::npos)
+			return false;
+	}
+	return true;
+}
+
+void test_queryString()
+{
+	string s = "0110";
+	int N = 4;
+	cout<<queryString(s,N);
+}
+
+int get_vec_sqr(vector<int> node)
+{
+	auto sum = 0;
+	for (int i=0;i<node.size();i++)
+	{
+		sum += node[i] * node[i];
+	}
+	return sum;
+}
+bool sort_vec_dw(pair<vector<int>, int> A, pair<vector<int>, int> B)
+{
+	return A.second < B.second;
+}
+
+vector<vector<int>> kClosest(vector<vector<int>>& points, int K) {
+	map<vector<int>, int> ttt;
+	for (int i = 0; i < points.size(); ++i)
+	{
+		ttt[points[i]] = get_vec_sqr(points[i]);
+	}
+	vector<pair<vector<int>, int>> cot;
+	auto it = ttt.begin();
+	while (it != ttt.end())
+	{
+		cot.push_back(make_pair(it->first, it->second));
+		++it;
+	}
+	sort(cot.begin(), cot.end(),sort_vec_dw);
+	vector<vector<int>> ret;
+	for (int k=0;k<K;k++)
+	{
+		ret.push_back(cot[k].first);
+	}
+	return ret;
+}
+
+void test_kClosest()
+{
+	vector<vector<int>> pos = { {3, 3},{5, -1},{-2, 4} };
+	cout << "973. K Closest Points to Origin" << endl;
+	int k = 1;
+	auto ack = kClosest(pos, k);
+
+	auto h = 1;
+	return;
+
+}
+
+TreeNode* insert_2_max_tree(TreeNode *root,int val)
+{
+	if (!root)
+		return new TreeNode(val);
+
+	if (root->val<val)
+	{
+		auto new_root = new TreeNode(val);
+		new_root->left = root;
+		return new_root;
+	}
+	
+	if (root->right&&val>root->right->val)
+	{
+		auto right_tree = root->right;
+		auto new_node = new TreeNode(val);
+		root->right = new_node;
+		new_node->left = right_tree;
+		return root;
+	}
+
+	if(root->left&&val<root->left->val)
+	{
+		return insert_2_max_tree(root->left, val);
+	}
+
+	if (root->left&&val>root->left->val)
+	{
+		return insert_2_max_tree(root->right, val);
+	}
+	
+	
+}
+
+TreeNode* insertIntoMaxTree(TreeNode* root, int val)
+{
+	return insert_2_max_tree(root, val);
+}
+void test_1()
+{
+	TreeNode* _node5 = new TreeNode(5);
+	TreeNode* _node2 = new TreeNode(2);
+	TreeNode* _node3 = new TreeNode(3);
+	TreeNode* _node1 = new TreeNode(1);
+
+	_node5->left = _node2;
+	_node5->right = _node3;
+
+	_node2->right = _node1;
+
+	auto value = 4;
+	auto ack = insertIntoMaxTree(_node5, value);
+}
+
+void test_2()
+{
+	TreeNode* _node5 = new TreeNode(5);
+	TreeNode* _node2 = new TreeNode(2);
+	TreeNode* _node4 = new TreeNode(4);
+	TreeNode* _node1 = new TreeNode(1);
+
+	_node5->left = _node2;
+	_node5->right = _node4;
+
+	_node2->right = _node1;
+
+	auto value = 3;
+	auto ack = insertIntoMaxTree(_node5, value);
+	value += 1;
+}
+
+void test_insertIntoMaxTree()
+{
+
+	test_2();
+	return;
+
+}
 
 int main()
 {
@@ -974,6 +2056,24 @@ int main()
 	//test_subtreeWithAllDeepest();
 	//test_diffWaysToCompute();
 	//test_MyCircularDeque();
-	test_MyCircularQueue();
-	//return 0;
+	//test_MyCircularQueue();
+	//test_findDuplicateSubtrees(); //?
+	//test_Codec(); //todo
+	//test_findCircleNum();
+	//test_intervalIntersection();
+	//test_pivot_index();
+	//test_countSegments();
+	//test_maxDistToClosest();
+	//test_licenseKeyFormatting();
+	//test_dominantIndex();
+	//test_repeatedSubstringPattern(); //todo
+	//test_largestTimeFromDigits(); // todo
+	//test_allPossibleFBT();
+	//test_partitionLabels();
+	//test_reorganizeString();
+	//test_distributeCoins();
+	//test_queryString();
+	//test_kClosest();
+	test_insertIntoMaxTree();
+	return 0;
 }
